@@ -2,6 +2,7 @@ package com.marius.reporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Report {
@@ -114,7 +115,7 @@ public class Report {
 
         @Override
         public String toString() {
-            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+            return String.format(Locale.UK,"%02d:%02d:%02d", hours, minutes, seconds);
         }
     }
 }
