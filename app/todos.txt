@@ -1,0 +1,5 @@
+TODO add fade out animations on item swipes for Times
+TODO day/night switch
+TODO saving and loading reports from db
+TODO reports list as main activity
+TODO

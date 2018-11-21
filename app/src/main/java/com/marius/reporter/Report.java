@@ -58,16 +58,8 @@ public class Report {
         return mTimes.isEmpty();
     }
 
-    public void addTime(Time time) {
-        mTimes.add(time);
-    }
-
-    public void addTime(int hours, int minutes, int seconds) {
-        mTimes.add(new Time(hours, minutes, seconds));
-    }
-
-    public Time getTime(int position) {
-        return mTimes.get(position);
+    public void addTime() {
+        mTimes.add(new Time());
     }
 
     public List<Time> getTimes() {

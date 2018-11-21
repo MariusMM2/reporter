@@ -35,10 +35,6 @@ public class ReportFragment extends Fragment {
         mTimeEditor = new TimeEditor();
 
         mReport = new Report();
-//        Random random = new Random();
-//        for (int i = 0; i < 20; i++) {
-//            mReport.addTime(random.nextInt(24), random.nextInt(60), random.nextInt(60));
-//        }
     }
 
     @Nullable
@@ -53,8 +49,8 @@ public class ReportFragment extends Fragment {
 
         mAddTimeButton = v.findViewById(R.id.add_time_button);
         mAddTimeButton.setOnClickListener(v1 -> {
-            mReport.addTime(new Time());
-            updateUI();
+            mReport.addTime();
+            mAdapter.notifyItemInserted(mReport.getNTimes()-1);
         });
 
         updateUI();
@@ -76,13 +72,11 @@ public class ReportFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Time> times = mReport.getTimes();
 
         if (mAdapter == null) {
-            mAdapter = new TimeAdapter(times);
+            mAdapter = new TimeAdapter(mReport.getTimes());
             mTimeRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.setTimes(times);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -240,7 +234,10 @@ public class ReportFragment extends Fragment {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             int position = viewHolder.getAdapterPosition();
+
             mAdapter.deleteTime(position);
         }
+
+
     }
 }
