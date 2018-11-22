@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import com.marius.reporter.R;
 
+//A template Activity consisting of one fragment
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     public static boolean sDarkTheme = false;
 
     protected abstract Fragment createFragment();
 
+    //To be overridden if the activity contains multiple fragments
     @LayoutRes
     protected int getLayoutResId() {
         return R.layout.activity_fragment;
