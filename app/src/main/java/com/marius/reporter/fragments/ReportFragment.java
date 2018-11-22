@@ -21,6 +21,7 @@ import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
 import com.marius.reporter.activities.ReportActivity;
+import com.marius.reporter.activities.SingleFragmentActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -146,10 +147,10 @@ public class ReportFragment extends Fragment {
         inflater.inflate(R.menu.fragment_report, menu);
 
         SwitchCompat dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.menu_switch);
-        dayNightSwitch.setChecked(ReportActivity.isDarkMode);
+        dayNightSwitch.setChecked(SingleFragmentActivity.sDarkTheme);
         dayNightSwitch.animate();
         dayNightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            ReportActivity.isDarkMode = isChecked;
+            SingleFragmentActivity.sDarkTheme = isChecked;
 
             Intent intent = new Intent(getActivity(), ReportActivity.class);
             Timer timer = new Timer();

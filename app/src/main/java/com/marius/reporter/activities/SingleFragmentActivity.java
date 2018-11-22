@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import com.marius.reporter.R;
 
-import static com.marius.reporter.activities.ReportActivity.isDarkMode;
-
 public abstract class SingleFragmentActivity extends AppCompatActivity {
+    public static boolean sDarkTheme = false;
+
     protected abstract Fragment createFragment();
 
     @LayoutRes
@@ -19,7 +19,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(isDarkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
+        setTheme(sDarkTheme ? R.style.AppNightTheme : R.style.AppDayTheme);
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
 
