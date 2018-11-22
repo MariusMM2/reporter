@@ -1,5 +1,6 @@
 package com.marius.reporter.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,18 +9,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
+import com.marius.reporter.activities.ReportActivity;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ReportFragment extends Fragment {
     private Report mReport;
@@ -32,9 +35,11 @@ public class ReportFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mReport = (Report) savedInstanceState.getSerializable(Arg.REPORT);
+        }
+        setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
-
-        mReport = new Report();
     }
 
     @Nullable
@@ -67,11 +72,49 @@ public class ReportFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_report, menu);
+
+        SwitchCompat dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.menu_switch);
+        dayNightSwitch.setChecked(ReportActivity.isDarkMode);
+        dayNightSwitch.animate();
+        dayNightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ReportActivity.isDarkMode = isChecked;
+
+            Intent intent = new Intent(getActivity(), ReportActivity.class);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    startActivity(intent);
+                    getActivity().finish();
+                    timer.cancel();
+                }
+            }, 220);
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(Arg.REPORT, mReport);
+    }
+
     private void setCurrentTime(Time time, TextView timeHolderTextView) {
         mTimeEditor.setCurrentTime(time, timeHolderTextView);
     }
 
-    public void updateUI() {
+    private void updateUI() {
 
         if (mAdapter == null) {
             mAdapter = new TimeAdapter(mReport.getTimes());
