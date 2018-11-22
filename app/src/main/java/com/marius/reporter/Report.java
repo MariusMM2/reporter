@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Report {
     private UUID mId;
-    private String mTitle;
+    private String mFlyerName;
     private short mQuantityLeft;
     private String mGPSName;
     private List<Time> mTimes;
@@ -18,7 +18,9 @@ public class Report {
 
     public Report(UUID id) {
         mId = id;
-        mQuantityLeft = -1;
+        mFlyerName = "";
+        mQuantityLeft = 0;
+        mGPSName = "";
         mTimes = new ArrayList<>();
     }
 
@@ -26,12 +28,12 @@ public class Report {
         return mId;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getFlyerName() {
+        return mFlyerName;
     }
 
-    public void setTitle(String title) {
-        mTitle = title;
+    public void setFlyerName(String flyerName) {
+        mFlyerName = flyerName;
     }
 
     public short getQuantityLeft() {
@@ -48,10 +50,6 @@ public class Report {
 
     public void setGPSName(String GPSName) {
         mGPSName = GPSName;
-    }
-
-    public int getNTimes() {
-        return mTimes.size();
     }
 
     public boolean hasTimes() {

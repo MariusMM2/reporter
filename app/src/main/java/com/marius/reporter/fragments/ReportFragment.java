@@ -11,7 +11,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.*;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.marius.reporter.R;
@@ -25,19 +28,27 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ReportFragment extends Fragment {
-    private Report mReport;
+    private static final String TAG = ReportFragment.class.getSimpleName();
+
+    private class Arg {
+        private static final String REPORT = "report";
+    }
+
+    private static Report mReport = new Report();
     private TimeEditor mTimeEditor;
 
     private TimeAdapter mAdapter;
+
     private RecyclerView mTimeRecyclerView;
     private FloatingActionButton mAddTimeButton;
+    private EditText mFlyerNameField;
+    private EditText mQuantityLeftField;
+    private EditText mGpsNameField;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mReport = (Report) savedInstanceState.getSerializable(Arg.REPORT);
-        }
+
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
     }
@@ -46,6 +57,63 @@ public class ReportFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
+
+        mFlyerNameField = v.findViewById(R.id.flyer_name);
+        mFlyerNameField.setText(mReport.getFlyerName());
+        mFlyerNameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mReport.setFlyerName(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mQuantityLeftField = v.findViewById(R.id.quantity_left);
+        mQuantityLeftField.setText(""+mReport.getQuantityLeft());
+        mQuantityLeftField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mReport.setQuantityLeft(Short.parseShort(s.toString()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mGpsNameField = v.findViewById(R.id.gps_name);
+        mGpsNameField.setText(mReport.getGPSName());
+        mGpsNameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mReport.setGPSName(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         mTimeEditor.init(v);
 
@@ -102,12 +170,6 @@ public class ReportFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(Arg.REPORT, mReport);
     }
 
     private void setCurrentTime(Time time, TextView timeHolderTextView) {
@@ -232,10 +294,6 @@ public class ReportFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mTimes.size();
-        }
-
-        public void setTimes(List<Time> times) {
-            mTimes = times;
         }
 
         public void deleteTime(int position) {
