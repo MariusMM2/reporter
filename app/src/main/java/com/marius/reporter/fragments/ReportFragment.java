@@ -55,7 +55,7 @@ public class ReportFragment extends Fragment {
         mAddTimeButton = v.findViewById(R.id.add_time_button);
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.addTime();
-            mAdapter.notifyItemInserted(mReport.getNTimes()-1);
+            mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
         });
 
         updateUI();
