@@ -5,6 +5,6 @@
     <item
         android:id="@+id/day_night_switch"
         android:title="@string/day_night_switch"
-        app:actionLayout="@layout/switch_item"
+        app:actionLayout="@layout/theme_switch_item"
         app:showAsAction="always" />
 </menu>

@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +16,8 @@ import android.view.*;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import com.mahfa.dnswitch.DayNightSwitch;
+import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
@@ -25,8 +26,6 @@ import com.marius.reporter.activities.SingleFragmentActivity;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ReportFragment extends Fragment {
     private static final String TAG = ReportFragment.class.getSimpleName();
@@ -45,6 +44,7 @@ public class ReportFragment extends Fragment {
     private EditText mFlyerNameField;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;
+    private DayNightSwitch mDayNightSwitch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,23 +146,29 @@ public class ReportFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_report, menu);
 
-        SwitchCompat dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.menu_switch);
-        dayNightSwitch.setChecked(SingleFragmentActivity.sDarkTheme);
-        dayNightSwitch.animate();
-        dayNightSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SingleFragmentActivity.sDarkTheme = isChecked;
+        //the day/night switch
+        mDayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
+        mDayNightSwitch.setIsNight(SingleFragmentActivity.sDarkTheme);
+        mDayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
+            @Override
+            public void onAnimStart() {
 
-            Intent intent = new Intent(getActivity(), ReportActivity.class);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    startActivity(intent);
-                    getActivity().finish();
-                    timer.cancel();
-                }
-            }, 220);
+            }
+
+            @Override
+            public void onAnimEnd() {
+                Intent intent = new Intent(getActivity(), ReportActivity.class);
+
+                startActivity(intent);
+                getActivity().finish();
+            }
+
+            @Override
+            public void onAnimValueChanged(float v) {
+
+            }
         });
+        mDayNightSwitch.setListener(isNight -> SingleFragmentActivity.sDarkTheme = isNight);
     }
 
     @Override
