@@ -21,8 +21,8 @@ import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
+import com.marius.reporter.Settings;
 import com.marius.reporter.activities.ReportActivity;
-import com.marius.reporter.activities.SingleFragmentActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +35,7 @@ public class ReportFragment extends Fragment {
         private static final String REPORT = "report";
     }
 
+    private Settings mSettings;
     private static Report mReport = new Report();
     private TimeEditor mTimeEditor;
 
@@ -50,6 +51,7 @@ public class ReportFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSettings = Settings.getInstance(getActivity());
 
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
@@ -163,7 +165,7 @@ public class ReportFragment extends Fragment {
 
         //the day/night switch
         mDayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
-        mDayNightSwitch.setIsNight(SingleFragmentActivity.sDarkTheme);
+        mDayNightSwitch.setIsNight(mSettings.darkMode);
         mDayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
             @Override
             public void onAnimStart() {
@@ -183,7 +185,7 @@ public class ReportFragment extends Fragment {
 
             }
         });
-        mDayNightSwitch.setListener(isNight -> SingleFragmentActivity.sDarkTheme = isNight);
+        mDayNightSwitch.setListener(isNight -> mSettings.darkMode = isNight);
     }
 
     @Override
