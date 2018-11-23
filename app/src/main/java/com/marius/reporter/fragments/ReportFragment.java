@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @SuppressWarnings("FieldCanBeLocal")
 public class ReportFragment extends Fragment {
     private static final String TAG = ReportFragment.class.getSimpleName();
+    private AppCompatCheckBox mQuantityLeftLabel;
 
     private class Arg {
         private static final String REPORT = "report";
@@ -91,8 +93,16 @@ public class ReportFragment extends Fragment {
             }
         });
 
-        mQuantityLeftField = v.findViewById(R.id.quantity_left);
-        mQuantityLeftField.setText(String.valueOf(mReport.getQuantityLeft()));
+        mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
+        mQuantityLeftLabel.setChecked(mReport.isWithRemainingFlyers());
+        mQuantityLeftLabel.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mReport.setWithRemainingFlyers(isChecked);
+            mQuantityLeftField.setEnabled(isChecked);
+        });
+
+        mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
+        mQuantityLeftField.setEnabled(mReport.isWithRemainingFlyers());
+        mQuantityLeftField.setText(String.valueOf(mReport.getRemainingFlyers()));
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,9 +112,9 @@ public class ReportFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
-                    mReport.setQuantityLeft(Short.parseShort(s.toString()));
+                    mReport.setRemainingFlyers(Short.parseShort(s.toString()));
                 } catch (NumberFormatException e) {
-                    mReport.setQuantityLeft(0);
+                    mReport.setRemainingFlyers(0);
                 }
             }
 
@@ -253,12 +263,12 @@ public class ReportFragment extends Fragment {
     private String getReportOutput() {
         StringBuilder outputBuilder = new StringBuilder();
         String flyerName = getString(R.string.output_flyer_name, mReport.getFlyerName());
-        String quantityLeft = getString(R.string.output_quantity_left, mReport.getQuantityLeft());
+        String quantityLeft = getString(R.string.output_quantity_left, mReport.getRemainingFlyers());
         String gpsName = getString(R.string.output_gps_name, mReport.getGPSName());
         String gps = getString(R.string.output_gps, mReport.getTimesString());
 
         outputBuilder.append(flyerName).append("\n\n");
-        if (mReport.hasQuantityLeft()) {
+        if (mReport.isWithRemainingFlyers()) {
             outputBuilder.append(quantityLeft).append("\n\n");
         }
         outputBuilder.append(gpsName).append("\n\n")

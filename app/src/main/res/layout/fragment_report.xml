@@ -36,13 +36,29 @@
                 android:hint="@string/flyer_name"
                 android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"/>
 
-            <EditText
-                android:id="@+id/quantity_left"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:selectAllOnFocus="true"
-                tools:text="Quantity Left" />
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/remaining_flyers_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:labelFor="@+id/remaining_flyers_field"
+                    android:text="@string/quantity_left"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/remaining_flyers_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
+                    tools:text="000" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/gps_name"

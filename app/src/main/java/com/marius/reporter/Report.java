@@ -9,7 +9,8 @@ import java.util.UUID;
 public class Report implements Serializable {
     private UUID mId;
     private String mFlyerName;
-    private short mQuantityLeft;
+    private short mRemainingFlyers;
+    private boolean mWithRemainingFlyers;
     private transient String mGPSName;
     private List<Time> mTimes;
 
@@ -20,7 +21,8 @@ public class Report implements Serializable {
     public Report(UUID id) {
         mId = id;
         mFlyerName = "";
-        mQuantityLeft = 0;
+        mRemainingFlyers = 0;
+        mWithRemainingFlyers = true;
         mGPSName = "";
         mTimes = new ArrayList<>();
     }
@@ -37,12 +39,12 @@ public class Report implements Serializable {
         mFlyerName = flyerName;
     }
 
-    public short getQuantityLeft() {
-        return mQuantityLeft;
+    public short getRemainingFlyers() {
+        return mRemainingFlyers;
     }
 
-    public void setQuantityLeft(int quantityLeft) {
-        mQuantityLeft = (short)quantityLeft;
+    public void setRemainingFlyers(int remainingFlyers) {
+        mRemainingFlyers = (short) remainingFlyers;
     }
 
     public String getGPSName() {
@@ -79,8 +81,12 @@ public class Report implements Serializable {
         return timesBuilder.toString();
     }
 
-    public boolean hasQuantityLeft() {
-        return mQuantityLeft > 0;
+    public boolean isWithRemainingFlyers() {
+        return mWithRemainingFlyers;
+    }
+
+    public void setWithRemainingFlyers(boolean withRemainingFlyers) {
+        mWithRemainingFlyers = withRemainingFlyers;
     }
 
     public static class Time implements Serializable {
