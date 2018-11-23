@@ -27,6 +27,7 @@ import com.marius.reporter.activities.SingleFragmentActivity;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class ReportFragment extends Fragment {
     private static final String TAG = ReportFragment.class.getSimpleName();
 
@@ -79,7 +80,7 @@ public class ReportFragment extends Fragment {
         });
 
         mQuantityLeftField = v.findViewById(R.id.quantity_left);
-        mQuantityLeftField.setText(""+mReport.getQuantityLeft());
+        mQuantityLeftField.setText(mReport.getQuantityLeft());
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -88,7 +89,7 @@ public class ReportFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mReport.setQuantityLeft(Short.parseShort(s.toString()));
+                mReport.setQuantityLeft(s.toString());
             }
 
             @Override

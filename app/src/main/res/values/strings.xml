@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Reporter</string>
     <string name="day_night_switch">Day-Night Switch</string>
+    <string name="flyer_name">Flyer Name</string>
+    <string name="quantity_left">Quantity Left</string>
+    <string name="gps_name">GPS Name</string>
 </resources>

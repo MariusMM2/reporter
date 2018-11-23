@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Report {
     private UUID mId;
     private String mFlyerName;
-    private short mQuantityLeft;
+    private String mQuantityLeft;
     private String mGPSName;
     private List<Time> mTimes;
 
@@ -19,7 +19,7 @@ public class Report {
     public Report(UUID id) {
         mId = id;
         mFlyerName = "";
-        mQuantityLeft = 0;
+        mQuantityLeft = "0";
         mGPSName = "";
         mTimes = new ArrayList<>();
     }
@@ -36,11 +36,11 @@ public class Report {
         mFlyerName = flyerName;
     }
 
-    public short getQuantityLeft() {
+    public String getQuantityLeft() {
         return mQuantityLeft;
     }
 
-    public void setQuantityLeft(short quantityLeft) {
+    public void setQuantityLeft(String quantityLeft) {
         mQuantityLeft = quantityLeft;
     }
 
