@@ -84,12 +84,12 @@ public class ReportFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mReport.setFlyerName(s.toString());
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mReport.setFlyerName(s.toString());
             }
         });
 
@@ -143,9 +143,6 @@ public class ReportFragment extends Fragment {
             }
         });
 
-        mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
-        mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-
         mAddTimeButton = v.findViewById(R.id.add_time_button);
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.addTime();
@@ -162,10 +159,13 @@ public class ReportFragment extends Fragment {
             startActivity(i);
         });
 
-        updateUI();
+        mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
+        mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
+
+        updateUI();
 
         return v;
     }
