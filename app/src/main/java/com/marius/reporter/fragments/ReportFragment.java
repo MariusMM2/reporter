@@ -80,7 +80,7 @@ public class ReportFragment extends Fragment {
         });
 
         mQuantityLeftField = v.findViewById(R.id.quantity_left);
-        mQuantityLeftField.setText(""+mReport.getQuantityLeft());
+        mQuantityLeftField.setText(String.valueOf(mReport.getQuantityLeft()));
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
