@@ -80,7 +80,7 @@ public class ReportFragment extends Fragment {
         });
 
         mQuantityLeftField = v.findViewById(R.id.quantity_left);
-        mQuantityLeftField.setText(mReport.getQuantityLeft());
+        mQuantityLeftField.setText(""+mReport.getQuantityLeft());
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,7 +89,11 @@ public class ReportFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mReport.setQuantityLeft(s.toString());
+                try {
+                    mReport.setQuantityLeft(Short.parseShort(s.toString()));
+                } catch (NumberFormatException e) {
+                    mReport.setQuantityLeft(0);
+                }
             }
 
             @Override
@@ -126,6 +130,16 @@ public class ReportFragment extends Fragment {
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.addTime();
             mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
+        });
+
+        FloatingActionButton shareReportButton = v.findViewById(R.id.share_report_button);
+        shareReportButton.setOnClickListener(v12 -> {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT, getReportOutput());
+            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_subject));
+            i = Intent.createChooser(i, getString(R.string.send_report));
+            startActivity(i);
         });
 
         updateUI();
@@ -192,6 +206,22 @@ public class ReportFragment extends Fragment {
         } else {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private String getReportOutput() {
+        StringBuilder outputBuilder = new StringBuilder();
+        String flyerName = getString(R.string.output_flyer_name, mReport.getFlyerName());
+        String quantityLeft = getString(R.string.output_quantity_left, mReport.getQuantityLeft());
+        String gpsName = getString(R.string.output_gps_name, mReport.getGPSName());
+        String gps = getString(R.string.output_gps, mReport.getTimesString());
+
+        outputBuilder.append(flyerName).append("\n\n");
+        if (mReport.hasQuantityLeft()) {
+            outputBuilder.append(quantityLeft).append("\n\n");
+        }
+        outputBuilder.append(gpsName).append("\n\n")
+                .append(gps);
+        return outputBuilder.toString();
     }
 
     private static class TimeEditor {

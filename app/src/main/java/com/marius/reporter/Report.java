@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Report {
     private UUID mId;
     private String mFlyerName;
-    private String mQuantityLeft;
+    private short mQuantityLeft;
     private String mGPSName;
     private List<Time> mTimes;
 
@@ -19,7 +19,7 @@ public class Report {
     public Report(UUID id) {
         mId = id;
         mFlyerName = "";
-        mQuantityLeft = "0";
+        mQuantityLeft = 0;
         mGPSName = "";
         mTimes = new ArrayList<>();
     }
@@ -36,12 +36,12 @@ public class Report {
         mFlyerName = flyerName;
     }
 
-    public String getQuantityLeft() {
+    public short getQuantityLeft() {
         return mQuantityLeft;
     }
 
-    public void setQuantityLeft(String quantityLeft) {
-        mQuantityLeft = quantityLeft;
+    public void setQuantityLeft(int quantityLeft) {
+        mQuantityLeft = (short)quantityLeft;
     }
 
     public String getGPSName() {
@@ -62,6 +62,24 @@ public class Report {
 
     public List<Time> getTimes() {
         return mTimes;
+    }
+
+    public String getTimesString() {
+        StringBuilder timesBuilder = new StringBuilder();
+        if (mTimes.size() > 0) {
+            timesBuilder.append(mTimes.get(0));
+            if (mTimes.size() > 1) {
+                for (int i = 1; i < mTimes.size(); i++) {
+                    timesBuilder.append(", ");
+                    timesBuilder.append(mTimes.get(i));
+                }
+            }
+        }
+        return timesBuilder.toString();
+    }
+
+    public boolean hasQuantityLeft() {
+        return mQuantityLeft > 0;
     }
 
     public static class Time {

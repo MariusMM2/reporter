@@ -4,4 +4,10 @@
     <string name="flyer_name">Flyer Name</string>
     <string name="quantity_left">Quantity Left</string>
     <string name="gps_name">GPS Name</string>
+    <string name="output_flyer_name">Flyer name: %s</string>
+    <string name="output_quantity_left">Quantity left: %d</string>
+    <string name="output_gps_name">GPS Name: %s</string>
+    <string name="output_gps">GPS: %s</string>
+    <string name="report_subject">Report</string>
+    <string name="send_report">Send report via</string>
 </resources>
