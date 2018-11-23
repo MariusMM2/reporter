@@ -1,15 +1,16 @@
 package com.marius.reporter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class Report {
+public class Report implements Serializable {
     private UUID mId;
     private String mFlyerName;
     private short mQuantityLeft;
-    private String mGPSName;
+    private transient String mGPSName;
     private List<Time> mTimes;
 
     public Report() {
@@ -82,7 +83,7 @@ public class Report {
         return mQuantityLeft > 0;
     }
 
-    public static class Time {
+    public static class Time implements Serializable {
         private byte hours;
         private byte minutes;
         private byte seconds;

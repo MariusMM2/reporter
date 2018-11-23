@@ -1,5 +1,6 @@
 package com.marius.reporter.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,8 +25,10 @@ import com.marius.reporter.Report.Time;
 import com.marius.reporter.Settings;
 import com.marius.reporter.activities.ReportActivity;
 
+import java.io.*;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ReportFragment extends Fragment {
@@ -41,12 +44,13 @@ public class ReportFragment extends Fragment {
 
     private TimeAdapter mAdapter;
 
-    private RecyclerView mTimeRecyclerView;
-    private FloatingActionButton mAddTimeButton;
+    private DayNightSwitch mDayNightSwitch;
     private EditText mFlyerNameField;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;
-    private DayNightSwitch mDayNightSwitch;
+    private RecyclerView mTimeRecyclerView;
+    private FloatingActionButton mAddTimeButton;
+    private FloatingActionButton mShareReportButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +60,8 @@ public class ReportFragment extends Fragment {
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
 
-        mReport = new Report();
+        loadReport();
+
         mReport.setGPSName(mSettings.gpsName);
     }
 
@@ -64,6 +69,8 @@ public class ReportFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
+
+        mTimeEditor.init(v);
 
         mFlyerNameField = v.findViewById(R.id.flyer_name);
         mFlyerNameField.setText(mReport.getFlyerName());
@@ -126,8 +133,6 @@ public class ReportFragment extends Fragment {
             }
         });
 
-        mTimeEditor.init(v);
-
         mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
@@ -137,8 +142,8 @@ public class ReportFragment extends Fragment {
             mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
         });
 
-        FloatingActionButton shareReportButton = v.findViewById(R.id.share_report_button);
-        shareReportButton.setOnClickListener(v12 -> {
+        mShareReportButton = v.findViewById(R.id.share_report_button);
+        mShareReportButton.setOnClickListener(v12 -> {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, getReportOutput());
@@ -177,10 +182,11 @@ public class ReportFragment extends Fragment {
 
             @Override
             public void onAnimEnd() {
+                saveReport();
                 Intent intent = new Intent(getActivity(), ReportActivity.class);
 
                 startActivity(intent);
-                getActivity().finish();
+                Objects.requireNonNull(getActivity()).finish();
             }
 
             @Override
@@ -196,6 +202,37 @@ public class ReportFragment extends Fragment {
         switch (item.getItemId()) {
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveReport();
+    }
+
+    private void saveReport() {
+        try (
+                FileOutputStream fos = Objects.requireNonNull(getActivity()).openFileOutput("currentReport", Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos)
+        ) {
+            oos.writeObject(mReport);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadReport() {
+        try (
+                FileInputStream fis = Objects.requireNonNull(getActivity()).openFileInput("currentReport");
+                ObjectInputStream ois = new ObjectInputStream(fis)
+        ) {
+            mReport = (Report) ois.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            mReport = new Report();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
