@@ -36,7 +36,7 @@ public class ReportFragment extends Fragment {
     }
 
     private Settings mSettings;
-    private static Report mReport = new Report();
+    private Report mReport;
     private TimeEditor mTimeEditor;
 
     private TimeAdapter mAdapter;
@@ -55,6 +55,9 @@ public class ReportFragment extends Fragment {
 
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
+
+        mReport = new Report();
+        mReport.setGPSName(mSettings.gpsName);
     }
 
     @Nullable
@@ -119,7 +122,7 @@ public class ReportFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mSettings.gpsName = s.toString();
             }
         });
 
