@@ -233,14 +233,13 @@ public class ReportFragment extends Fragment {
     }
 
     private void loadReport() {
+        mReport = new Report();
+
         try (
                 FileInputStream fis = Objects.requireNonNull(getActivity()).openFileInput("currentReport");
                 ObjectInputStream ois = new ObjectInputStream(fis)
         ) {
             mReport = (Report) ois.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            mReport = new Report();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
