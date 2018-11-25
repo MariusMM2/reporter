@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class Report implements Serializable {
-    private UUID mId;
+    private final UUID mId;
     private String mFlyerName;
     private short mRemainingFlyers;
     private boolean mWithRemainingFlyers;
@@ -63,6 +63,10 @@ public class Report implements Serializable {
         mTimes.add(new Time());
     }
 
+    public void addTime(Time time) {
+        mTimes.add(time);
+    }
+
     public List<Time> getTimes() {
         return mTimes;
     }
@@ -89,6 +93,20 @@ public class Report implements Serializable {
         mWithRemainingFlyers = withRemainingFlyers;
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
+    public static Report dummy() {
+        Report report = new Report();
+        report.setFlyerName("diam ut venenatis tellus in");
+        report.setGPSName("suspendisse");
+        report.setWithRemainingFlyers(true);
+        report.setRemainingFlyers(420);
+        for (int i = 0; i < 10; i++) {
+            report.addTime(new Time(10, 20, 30));
+        }
+
+        return report;
+    }
+
     public static class Time implements Serializable {
         private byte hours;
         private byte minutes;
@@ -109,7 +127,7 @@ public class Report implements Serializable {
         }
 
         public void setHours(int hours) {
-            this.hours = (byte) hours;
+            this.hours = (byte) Math.min(Math.max(hours, 0), 23);
         }
 
         public byte getMinutes() {
@@ -117,7 +135,7 @@ public class Report implements Serializable {
         }
 
         public void setMinutes(int minutes) {
-            this.minutes = (byte) minutes;
+            this.minutes = (byte) Math.min(Math.max(minutes, 0), 59);
         }
 
         public byte getSeconds() {
@@ -125,7 +143,7 @@ public class Report implements Serializable {
         }
 
         public void setSeconds(int seconds) {
-            this.seconds = (byte) seconds;
+            this.seconds = (byte) Math.min(Math.max(seconds, 0), 59);
         }
 
         @Override
