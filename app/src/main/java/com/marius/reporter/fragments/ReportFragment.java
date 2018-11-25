@@ -18,13 +18,10 @@ import android.view.*;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import com.mahfa.dnswitch.DayNightSwitch;
-import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
 import com.marius.reporter.Settings;
-import com.marius.reporter.activities.ReportActivity;
 
 import java.io.*;
 import java.util.List;
@@ -46,7 +43,6 @@ public class ReportFragment extends Fragment {
 
     private TimeAdapter mAdapter;
 
-    private DayNightSwitch mDayNightSwitch;
     private EditText mFlyerNameField;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;
@@ -175,31 +171,6 @@ public class ReportFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_report, menu);
-
-        //the day/night switch
-        mDayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
-        mDayNightSwitch.setIsNight(mSettings.darkMode);
-        mDayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
-            @Override
-            public void onAnimStart() {
-
-            }
-
-            @Override
-            public void onAnimEnd() {
-                saveReport();
-                Intent intent = new Intent(getActivity(), ReportActivity.class);
-
-                startActivity(intent);
-                Objects.requireNonNull(getActivity()).finish();
-            }
-
-            @Override
-            public void onAnimValueChanged(float v) {
-
-            }
-        });
-        mDayNightSwitch.setListener(isNight -> mSettings.darkMode = isNight);
     }
 
     @Override
