@@ -14,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/flyer_name"
-                android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"/>
+                android:inputType="text|textAutoCorrect|textAutoComplete|textMultiLine"
+                android:lines="3"
+                tools:text="@sample/tools:lorem/random" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -57,6 +59,7 @@
                     android:layout_weight="1"
                     android:inputType="number"
                     android:selectAllOnFocus="true"
+                    tools:ignore="LabelFor"
                     tools:text="000" />
             </LinearLayout>
 
@@ -80,7 +83,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toTopOf="@+id/time_input_card"
@@ -90,16 +93,15 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/times_recycler_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
             android:clipToPadding="true"
             android:fadingEdgeLength="40dp"
             android:requiresFadingEdge="vertical"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/list_item_time" />
+            android:scrollbars="vertical">
+
+        </android.support.v7.widget.RecyclerView>
 
     </android.support.v7.widget.CardView>
 
@@ -111,7 +113,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_weight="1"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,25 +123,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            tools:layout_editor_absoluteY="313dp">
+            android:orientation="horizontal">
 
 
             <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="4dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="2dp">
+                app:contentPadding="4dp">
 
                 <NumberPicker
                     android:id="@+id/hour_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="160dp"
                     android:layout_weight="1">
 
                 </NumberPicker>
@@ -149,19 +149,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="4dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="2dp">
+                app:contentPadding="4dp">
 
                 <NumberPicker
                     android:id="@+id/minute_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:layout_editor_absoluteX="192dp"
-                    tools:layout_editor_absoluteY="328dp">
+                    android:layout_width="40dp"
+                    android:layout_height="160dp"
+                    android:layout_weight="1">
 
                 </NumberPicker>
             </android.support.v7.widget.CardView>
@@ -170,19 +168,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="4dp"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="2dp">
+                app:contentPadding="4dp">
 
                 <NumberPicker
                     android:id="@+id/second_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    tools:layout_editor_absoluteX="160dp"
-                    tools:layout_editor_absoluteY="328dp">
+                    android:layout_width="40dp"
+                    android:layout_height="160dp"
+                    android:layout_weight="1">
 
                 </NumberPicker>
             </android.support.v7.widget.CardView>
