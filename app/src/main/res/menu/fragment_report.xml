@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/day_night_switch"
-        android:title="@string/day_night_switch"
-        app:actionLayout="@layout/theme_switch_item"
-        app:showAsAction="always" />
+        android:id="@+id/reset_report"
+        android:icon="@drawable/ic_reset"
+        android:title="@string/reset_report"
+        app:showAsAction="ifRoom" />
 </menu>

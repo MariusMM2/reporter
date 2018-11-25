@@ -75,7 +75,6 @@ public class ReportFragment extends Fragment {
         mTimeEditor.init(v);
 
         mFlyerNameField = v.findViewById(R.id.flyer_name);
-        mFlyerNameField.setText(mReport.getFlyerName());
         mFlyerNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -94,15 +93,12 @@ public class ReportFragment extends Fragment {
         });
 
         mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
-        mQuantityLeftLabel.setChecked(mReport.isWithRemainingFlyers());
         mQuantityLeftLabel.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mReport.setWithRemainingFlyers(isChecked);
             mQuantityLeftField.setEnabled(isChecked);
         });
 
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
-        mQuantityLeftField.setEnabled(mReport.isWithRemainingFlyers());
-        mQuantityLeftField.setText(String.valueOf(mReport.getRemainingFlyers()));
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,7 +121,6 @@ public class ReportFragment extends Fragment {
         });
 
         mGpsNameField = v.findViewById(R.id.gps_name);
-        mGpsNameField.setText(mReport.getGPSName());
         mGpsNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -162,10 +157,10 @@ public class ReportFragment extends Fragment {
         mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
+        updateUI();
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
-
-        updateUI();
 
         return v;
     }
@@ -210,6 +205,11 @@ public class ReportFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.reset_report:
+                mReport = new Report();
+                mReport.setGPSName(mSettings.gpsName);
+                updateUI();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -250,11 +250,17 @@ public class ReportFragment extends Fragment {
     }
 
     private void updateUI() {
+        mFlyerNameField.setText(mReport.getFlyerName());
+        mQuantityLeftLabel.setChecked(mReport.isWithRemainingFlyers());
+        mQuantityLeftField.setEnabled(mReport.isWithRemainingFlyers());
+        mQuantityLeftField.setText(String.valueOf(mReport.getRemainingFlyers()));
+        mGpsNameField.setText(mReport.getGPSName());
 
         if (mAdapter == null) {
             mAdapter = new TimeAdapter(mReport.getTimes());
             mTimeRecyclerView.setAdapter(mAdapter);
         } else {
+            mAdapter.setTimes(mReport.getTimes());
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -383,6 +389,10 @@ public class ReportFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mTimes.size();
+        }
+
+        public void setTimes(List<Time> times) {
+            mTimes = times;
         }
 
         public void deleteTime(int position) {
