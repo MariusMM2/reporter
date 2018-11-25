@@ -10,4 +10,5 @@
     <string name="output_gps">GPS: %s</string>
     <string name="report_subject">Report</string>
     <string name="send_report">Send report via</string>
+    <string name="reset_report">Reset Report</string>
 </resources>
