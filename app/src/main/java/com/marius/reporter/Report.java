@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class Report implements Serializable {
+    private transient Callbacks mCallBacks;
     private final UUID mId;
     private String mFlyerName;
     private short mRemainingFlyers;
@@ -14,17 +15,22 @@ public class Report implements Serializable {
     private transient String mGPSName;
     private List<Time> mTimes;
 
-    public Report() {
-        this(UUID.randomUUID());
+    public Report(Callbacks callbacks) {
+        this(UUID.randomUUID(), callbacks);
     }
 
-    public Report(UUID id) {
+    public Report(UUID id, Callbacks callbacks) {
+        mCallBacks = callbacks;
         mId = id;
         mFlyerName = "";
         mRemainingFlyers = 0;
         mWithRemainingFlyers = true;
         mGPSName = "";
         mTimes = new ArrayList<>();
+    }
+
+    public void setCallBacks(Callbacks callBacks) {
+        mCallBacks = callBacks;
     }
 
     public UUID getId() {
@@ -55,20 +61,20 @@ public class Report implements Serializable {
         mGPSName = GPSName;
     }
 
-    public boolean hasTimes() {
-        return mTimes.isEmpty();
+    public boolean isWithRemainingFlyers() {
+        return mWithRemainingFlyers;
     }
 
-    public void addTime() {
-        mTimes.add(new Time());
+    public void setWithRemainingFlyers(boolean withRemainingFlyers) {
+        mWithRemainingFlyers = withRemainingFlyers;
     }
 
-    public void addTime(Time time) {
-        mTimes.add(time);
-    }
-
-    public List<Time> getTimes() {
-        return mTimes;
+    public boolean isReadyToSend() {
+        boolean flyerName = !mFlyerName.isEmpty();
+        boolean remainingFlyer = !mWithRemainingFlyers || mRemainingFlyers != 0;
+        boolean gpsName = !mGPSName.isEmpty();
+        boolean times = !mTimes.isEmpty();
+        return flyerName && remainingFlyer && gpsName && times;
     }
 
     public String getTimesString() {
@@ -85,26 +91,40 @@ public class Report implements Serializable {
         return timesBuilder.toString();
     }
 
-    public boolean isWithRemainingFlyers() {
-        return mWithRemainingFlyers;
-    }
-
-    public void setWithRemainingFlyers(boolean withRemainingFlyers) {
-        mWithRemainingFlyers = withRemainingFlyers;
-    }
-
     @SuppressWarnings("SpellCheckingInspection")
-    public static Report dummy() {
-        Report report = new Report();
+    public static Report dummy(Callbacks callbacks) {
+        Report report = new Report(callbacks);
         report.setFlyerName("diam ut venenatis tellus in");
         report.setGPSName("suspendisse");
         report.setWithRemainingFlyers(true);
         report.setRemainingFlyers(420);
         for (int i = 0; i < 10; i++) {
-            report.addTime(new Time(10, 20, 30));
+            report.add(new Time(10, 20, 30));
         }
 
         return report;
+    }
+
+    //Times list delegates
+    public int size() {
+        return mTimes.size();
+    }
+    public boolean add(Time time) {
+        boolean result = mTimes.add(time);
+        mCallBacks.onListUpdated();
+        return result;
+    }
+    public void add(int index, Time element) {
+        mTimes.add(index, element);
+        mCallBacks.onListUpdated();
+    }
+    public Time get(int index) {
+        return mTimes.get(index);
+    }
+    public Time remove(int pos) {
+        Time result = mTimes.remove(pos);
+        mCallBacks.onListUpdated();
+        return result;
     }
 
     public static class Time implements Serializable {
@@ -150,5 +170,9 @@ public class Report implements Serializable {
         public String toString() {
             return String.format(Locale.UK,"%02d:%02d:%02d", hours, minutes, seconds);
         }
+    }
+
+    public interface Callbacks {
+        void onListUpdated();
     }
 }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="card_corner_radius">10dp</dimen>
+    <dimen name="item_time_normal">2dp</dimen>
+    <dimen name="item_time_selected">8dp</dimen>
 </resources>
