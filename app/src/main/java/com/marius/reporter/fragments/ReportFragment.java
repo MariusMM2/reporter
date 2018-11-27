@@ -162,12 +162,13 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             updateSendFAB();
         });
         mSendReportButton.setOnClickListener(v12 -> {
+
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, getReportOutput());
             i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_subject));
-            i = Intent.createChooser(i, getString(R.string.send_report));
-            startActivity(i);
+            final Intent i2 = Intent.createChooser(i, getString(R.string.send_report));
+            ViewTranslator.moveOffscreen(mSendReportButton, ViewTranslator.Direction.RIGHT, () -> startActivity(i2));
         });
         updateUIViews();
 
@@ -258,8 +259,13 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     }
 
     private void updateSendFAB() {
-        if (mReport.isReadyToSend()) ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton);
-        else ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton);
+        if (mReport.isReadyToSend()) {
+            mSendReportButton.setClickable(true);
+            ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton);
+        } else {
+            mSendReportButton.setClickable(false);
+            ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton);
+        }
     }
 
     @Override
