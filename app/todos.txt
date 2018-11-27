@@ -1,3 +1,4 @@
 TODO add fade out animations on item swipes for Times
 TODO saving and loading reports from db
 TODO reports list as main activity
+TODO time item swipe elevations are inconsistent in some situations
