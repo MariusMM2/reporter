@@ -89,7 +89,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             @Override
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int origDur = ViewTranslator.duration;
+                ViewTranslator.duration = 0;
                 updateSendFAB();
+                ViewTranslator.duration = origDur;
             }
         });
 
