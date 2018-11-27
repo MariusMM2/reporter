@@ -68,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/gps_name"
-                android:inputType="textVisiblePassword"
-                android:maxLines="1"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 tools:text="@sample/tools:lorem" />
 
         </LinearLayout>
@@ -100,6 +100,8 @@
             android:layout_gravity="center_horizontal"
             android:clipToPadding="true"
             android:fadingEdgeLength="40dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
             android:requiresFadingEdge="vertical"
             android:scrollbars="vertical">
 
@@ -187,17 +189,19 @@
     </android.support.v7.widget.CardView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/share_report_button"
+        android:id="@+id/send_report_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
+        app:elevation="2dp"
+        app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/time_input_card"
         app:layout_constraintTop_toTopOf="@+id/time_input_card"
         app:layout_constraintVertical_bias="0.474"
-        app:srcCompat="@drawable/ic_share" />
+        app:srcCompat="@drawable/ic_send" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_time_button"
@@ -206,6 +210,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        app:elevation="4dp"
+        app:fabSize="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/time_input_card"
         app:layout_constraintTop_toBottomOf="@+id/times_card"

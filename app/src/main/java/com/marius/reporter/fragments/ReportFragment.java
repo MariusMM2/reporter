@@ -1,10 +1,8 @@
 package com.marius.reporter.fragments;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,8 +16,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -27,6 +23,8 @@ import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
 import com.marius.reporter.Settings;
+import com.marius.reporter.utils.anim.ViewElevator;
+import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.io.*;
 import java.util.List;
@@ -46,7 +44,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private Settings mSettings;
     private Report mReport;
     private TimeEditor mTimeEditor;
-    private float mShareFabY;
 
     private TimeAdapter mAdapter;
 
@@ -56,7 +53,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private EditText mGpsNameField;
     private RecyclerView mTimeRecyclerView;
     private FloatingActionButton mAddTimeButton;
-    private FloatingActionButton mShareReportButton;
+    private FloatingActionButton mSendReportButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +64,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mTimeEditor = new TimeEditor();
 
         loadReport();
-
-        mReport.setGPSName(mSettings.gpsName);
     }
 
     @Nullable
@@ -81,11 +76,22 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
         mGpsNameField = v.findViewById(R.id.gps_name);
         mAddTimeButton = v.findViewById(R.id.add_time_button);
-        mShareReportButton = v.findViewById(R.id.share_report_button);
-
-        mShareFabY = mShareReportButton.getTop();
-
+        mSendReportButton = v.findViewById(R.id.send_report_button);
+        mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
         mTimeEditor.init(v);
+
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                updateSendFAB();
+            }
+        });
 
         mFlyerNameField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,13 +107,13 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             @Override
             public void afterTextChanged(Editable s) {
                 mReport.setFlyerName(s.toString());
-                updateShareFAB();
+                updateSendFAB();
             }
         });
         mQuantityLeftLabel.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mReport.setWithRemainingFlyers(isChecked);
             mQuantityLeftField.setEnabled(isChecked);
-            updateShareFAB();
+            updateSendFAB();
         });
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -126,7 +132,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
             @Override
             public void afterTextChanged(Editable s) {
-                updateShareFAB();
+                updateSendFAB();
             }
         });
         mGpsNameField.addTextChangedListener(new TextWatcher() {
@@ -144,15 +150,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             public void afterTextChanged(Editable s) {
                 mSettings.gpsName = s.toString();
 
-                updateShareFAB();
+                updateSendFAB();
             }
         });
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.add(new Time());
             mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
-            updateShareFAB();
+            updateSendFAB();
         });
-        mShareReportButton.setOnClickListener(v12 -> {
+        mSendReportButton.setOnClickListener(v12 -> {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, getReportOutput());
@@ -160,15 +166,13 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             i = Intent.createChooser(i, getString(R.string.send_report));
             startActivity(i);
         });
-        mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
+        updateUIViews();
+
+        mAdapter = new TimeAdapter(mReport);
+        mTimeRecyclerView.setAdapter(mAdapter);
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-
-        updateUI();
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
-
-        return v;
     }
 
     @Override
@@ -226,6 +230,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        mReport.setGPSName(mSettings.gpsName);
     }
 
     private void setCurrentTime(Time time, CardView timeHolderCard) {
@@ -233,35 +239,29 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     }
 
     private void updateUI() {
+        updateUIViews();
+        updateSendFAB();
+
+        mAdapter.setReport(mReport);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void updateUIViews() {
         mFlyerNameField.setText(mReport.getFlyerName());
         mQuantityLeftLabel.setChecked(mReport.isWithRemainingFlyers());
         mQuantityLeftField.setEnabled(mReport.isWithRemainingFlyers());
         mQuantityLeftField.setText(String.valueOf(mReport.getRemainingFlyers()));
         mGpsNameField.setText(mReport.getGPSName());
-        updateShareFAB();
-
-        if (mAdapter == null) {
-            mAdapter = new TimeAdapter(mReport);
-            mTimeRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setReport(mReport);
-            mAdapter.notifyDataSetChanged();
-        }
     }
 
-    private void updateShareFAB() {
-        boolean isReady = mReport.isReadyToSend();
-        final int duration = 500;
-        if (isReady) {
-            mShareReportButton.animate().translationY(mShareFabY).setDuration(duration).setInterpolator(new OvershootInterpolator()).start();
-        } else {
-            mShareReportButton.animate().translationY(mAddTimeButton.getTop()-mShareReportButton.getTop()).setDuration(duration).setInterpolator(new AnticipateInterpolator()).start();
-        }
+    private void updateSendFAB() {
+        if (mReport.isReadyToSend()) ViewTranslator.moveFromBehind(mAddTimeButton, mSendReportButton);
+        else ViewTranslator.moveToBehind(mAddTimeButton, mSendReportButton);
     }
 
     @Override
     public void onListUpdated() {
-        updateShareFAB();
+        updateSendFAB();
     }
 
     private String getReportOutput() {
@@ -328,10 +328,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         void setCurrentTime(Time time, CardView timeHolderCard) {
             if (mTimeHolderCard == timeHolderCard) return;
 
-            elevateCard(timeHolderCard, R.dimen.item_time_selected);
+            ViewElevator.elevate(timeHolderCard, R.dimen.item_time_selected);
 
             if (mTimeHolderCard != null)
-                elevateCard(mTimeHolderCard, R.dimen.item_time_normal);
+                ViewElevator.elevate(mTimeHolderCard, R.dimen.item_time_normal);
 
             mTime = time;
             mHourPicker.setValue(mTime.getHours());
@@ -343,15 +343,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             if (!mSecondPicker.isEnabled()) mSecondPicker.setEnabled(true);
 
             mTimeHolderCard = timeHolderCard;
-        }
-
-        private void elevateCard(@NonNull CardView timeHolderCard, @DimenRes int item_time_elevation) {
-            ValueAnimator valueAnimator = new ValueAnimator();
-            valueAnimator.setInterpolator(new OvershootInterpolator());
-            valueAnimator.setFloatValues(timeHolderCard.getElevation(), timeHolderCard.getResources().getDimension(item_time_elevation));
-            valueAnimator.setDuration(1000);
-            valueAnimator.addUpdateListener(animation -> timeHolderCard.setElevation((float) animation.getAnimatedValue()));
-            valueAnimator.start();
         }
 
         private void updateText() {
