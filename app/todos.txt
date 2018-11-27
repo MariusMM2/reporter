@@ -1,3 +1,5 @@
 TODO add fade out animations on item swipes for Times
 TODO saving and loading reports from db
 TODO reports list as main activity
+TODO pre-hide send button on activity creations (looks unintuitive when changing themes)
+
