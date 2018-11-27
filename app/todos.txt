@@ -2,3 +2,5 @@ TODO add fade out animations on item swipes for Times
 TODO saving and loading reports from db
 TODO reports list as main activity
 TODO time item swipe elevations are inconsistent in some situations
+TODO revamp the time editor (slide up on pressing a time, dismiss when pressing on empty space
+TODO "remaining flyers" field could do with a number spinner
