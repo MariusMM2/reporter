@@ -258,8 +258,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     }
 
     private void updateSendFAB() {
-        if (mReport.isReadyToSend()) ViewTranslator.moveFromBehind(mAddTimeButton, mSendReportButton);
-        else ViewTranslator.moveToBehind(mAddTimeButton, mSendReportButton);
+        if (mReport.isReadyToSend()) ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton);
+        else ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton);
     }
 
     @Override
