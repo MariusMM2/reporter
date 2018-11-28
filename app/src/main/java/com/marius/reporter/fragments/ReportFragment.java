@@ -17,18 +17,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
 import com.marius.reporter.Settings;
-import com.marius.reporter.utils.anim.ViewElevator;
+import com.marius.reporter.TimeEditor;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.io.*;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -99,12 +97,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mFlyerNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -121,7 +117,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -141,7 +136,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mGpsNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -287,77 +281,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         outputBuilder.append(gpsName).append("\n\n")
                 .append(gps);
         return outputBuilder.toString();
-    }
-
-    private static class TimeEditor {
-        private NumberPicker mHourPicker;
-        private NumberPicker mMinutePicker;
-        private NumberPicker mSecondPicker;
-        private Time mTime;
-
-        private CardView mTimeHolderCard;
-
-        TimeEditor() {
-            mTime = new Time();
-        }
-
-        void init(View parent) {
-            mHourPicker = parent.findViewById(R.id.hour_picker);
-            mMinutePicker = parent.findViewById(R.id.minute_picker);
-            mSecondPicker = parent.findViewById(R.id.second_picker);
-
-            mHourPicker.setMaxValue(23);
-            mMinutePicker.setMaxValue(59);
-            mSecondPicker.setMaxValue(59);
-            mHourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                mTime.setHours(newVal);
-                updateText();
-            });
-            mMinutePicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                mTime.setMinutes(newVal);
-                updateText();
-            });
-            mSecondPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                mTime.setSeconds(newVal);
-                updateText();
-            });
-            mHourPicker.setFormatter(TimeEditor::format);
-            mMinutePicker.setFormatter(TimeEditor::format);
-            mSecondPicker.setFormatter(TimeEditor::format);
-
-            mHourPicker.setEnabled(false);
-            mMinutePicker.setEnabled(false);
-            mSecondPicker.setEnabled(false);
-        }
-
-        static String format(int value) {
-            return String.format(Locale.UK, "%02d", value);
-        }
-
-        void setCurrentTime(Time time, CardView timeHolderCard) {
-            if (mTimeHolderCard == timeHolderCard) return;
-
-            ViewElevator.elevate(timeHolderCard, R.dimen.item_time_selected);
-
-            if (mTimeHolderCard != null)
-                ViewElevator.elevate(mTimeHolderCard, R.dimen.item_time_normal);
-
-            mTime = time;
-            mHourPicker.setValue(mTime.getHours());
-            mMinutePicker.setValue(mTime.getMinutes());
-            mSecondPicker.setValue(mTime.getSeconds());
-
-            if (!mHourPicker.isEnabled()) mHourPicker.setEnabled(true);
-            if (!mMinutePicker.isEnabled()) mMinutePicker.setEnabled(true);
-            if (!mSecondPicker.isEnabled()) mSecondPicker.setEnabled(true);
-
-            mTimeHolderCard = timeHolderCard;
-        }
-
-        private void updateText() {
-            if (mTimeHolderCard != null)
-                ((TextView) mTimeHolderCard.findViewById(R.id.item_time_text)).setText(mTime.toString());
-        }
     }
 
     private class TimeHolder extends RecyclerView.ViewHolder {
