@@ -3,6 +3,7 @@ package com.marius.reporter.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +29,8 @@ import com.marius.reporter.utils.anim.ViewTranslator;
 import java.io.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ReportFragment extends Fragment implements Report.Callbacks{
@@ -53,6 +56,9 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private FloatingActionButton mAddTimeButton;
     private FloatingActionButton mSendReportButton;
 
+    private Timer mSendFABTimer;
+    private TimerTask mSendFABUpdateTask;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,18 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mTimeEditor = new TimeEditor();
 
         loadReport();
+
+        mSendFABTimer= new Timer("SendButtonUpdater", true);
+        Handler handler = new Handler();
+        mSendFABUpdateTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (mReport.hasChanged()) {
+                    handler.post(ReportFragment.this::updateSendFAB);
+                    mReport.confirmChanges();
+                }
+            }
+        };
     }
 
     @Nullable
@@ -87,10 +105,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             @Override
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int origDur = ViewTranslator.duration;
-                ViewTranslator.duration = 0;
-                updateSendFAB();
-                ViewTranslator.duration = origDur;
+                updateSendFAB(0);
             }
         });
 
@@ -106,13 +121,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             @Override
             public void afterTextChanged(Editable s) {
                 mReport.setFlyerName(s.toString());
-                updateSendFAB();
             }
         });
         mQuantityLeftLabel.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mReport.setWithRemainingFlyers(isChecked);
             mQuantityLeftField.setEnabled(isChecked);
-            updateSendFAB();
         });
         mQuantityLeftField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -130,7 +143,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
             @Override
             public void afterTextChanged(Editable s) {
-                updateSendFAB();
             }
         });
         mGpsNameField.addTextChangedListener(new TextWatcher() {
@@ -146,14 +158,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             @Override
             public void afterTextChanged(Editable s) {
                 mSettings.gpsName = s.toString();
-
-                updateSendFAB();
             }
         });
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.add(new Time());
             mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
-            updateSendFAB();
         });
         mSendReportButton.setOnClickListener(v12 -> {
 
@@ -171,6 +180,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
+
+        mSendFABTimer.schedule(mSendFABUpdateTask, 0, 500);
     }
 
     @Override
@@ -203,6 +214,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     public void onStop() {
         super.onStop();
         saveReport();
+        mSendFABTimer.cancel();
     }
 
     private void saveReport() {
@@ -238,7 +250,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
     private void updateUI() {
         updateUIViews();
-        updateSendFAB();
 
         mAdapter.setReport(mReport);
         mAdapter.notifyDataSetChanged();
@@ -253,18 +264,29 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     }
 
     private void updateSendFAB() {
+        updateSendFAB(-1);
+    }
+
+    private void updateSendFAB(int duration) {
         if (mReport.isReadyToSend()) {
             mSendReportButton.setClickable(true);
-            ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton);
+            if (duration == -1) {
+                ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton);
+            } else {
+                ViewTranslator.moveFromBehind(mSendReportButton, mAddTimeButton, duration);
+            }
         } else {
             mSendReportButton.setClickable(false);
-            ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton);
+            if (duration == -1) {
+                ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton);
+            } else {
+                ViewTranslator.moveToBehind(mSendReportButton, mAddTimeButton, duration);
+            }
         }
     }
 
     @Override
     public void onListUpdated() {
-        updateSendFAB();
     }
 
     private String getReportOutput() {

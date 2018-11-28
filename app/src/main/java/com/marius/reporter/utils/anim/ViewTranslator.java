@@ -7,7 +7,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import com.marius.reporter.R;
 
@@ -20,28 +20,30 @@ public class ViewTranslator {
         DOWN
     }
 
-    public static int duration = 500;
+    private static int duration = -1;
 
     public static void moveToBehind(View mainView, View converView) {
-        moveToBehind(mainView, converView, duration);
+        moveToBehind(mainView, converView, getDuration(mainView));
     }
 
     public static void moveToBehind(View mainView, View coverView, int duration) {
         final int[] mainViewPos = new int[2]; mainView.getLocationOnScreen(mainViewPos);
         final int[] coverViewPos = new int[2]; coverView.getLocationOnScreen(coverViewPos);
-        final float mainViewCenterX = mainViewPos[1] + (float)mainView.getWidth()  / 2;
-        final float coverViewCenterX = coverViewPos[1] + (float)coverView.getWidth()  / 2;
+        final float mainViewCenterX = mainViewPos[1] + (float)mainView.getHeight()  / 2;
+        final float coverViewCenterX = coverViewPos[1] + (float)coverView.getHeight()  / 2;
+        System.out.println(mainView.getX());
+        System.out.println(coverView.getX());
 
         if (mainViewCenterX == coverViewCenterX) return;
 
         ObjectAnimator hide = ObjectAnimator.ofFloat(mainView, "translationY", coverViewCenterX - mainViewCenterX);
-        hide.setDuration((int)(duration*0.66));
+        hide.setDuration((int)(duration*0.75));
         hide.setInterpolator(new AnticipateInterpolator());
 
         ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.view_elevated, duration);
-        ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 90);
+        ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 360);
         rotate.setDuration(duration);
-        rotate.setInterpolator(new BounceInterpolator());
+        rotate.setInterpolator(new DecelerateInterpolator());
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(hide).after(elevate);
@@ -50,18 +52,18 @@ public class ViewTranslator {
     }
 
     public static void moveFromBehind(View mainView, View coverView) {
-        moveFromBehind(mainView, coverView, duration/2);
+        moveFromBehind(mainView, coverView, getDuration(mainView)/2);
     }
 
     public static void moveFromBehind(View mainView, View coverView, int duration) {
         ObjectAnimator show = ObjectAnimator.ofFloat(mainView, "translationY", 0);
-        show.setDuration((int)(duration*0.66));
+        show.setDuration(duration);
         show.setInterpolator(new OvershootInterpolator());
 
         ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.view_normal, duration);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 0);
         rotate.setDuration(duration);
-        rotate.setInterpolator(new BounceInterpolator());
+        rotate.setInterpolator(new DecelerateInterpolator());
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(show).before(elevate);
@@ -76,9 +78,10 @@ public class ViewTranslator {
                 value *= -1;
                 break;
         }
+
         @SuppressLint("ObjectAnimatorBinding")
         ObjectAnimator hide  = ObjectAnimator.ofFloat(view, getDirection(direction), value);
-        hide.setDuration(duration);
+        hide.setDuration(getDuration(view));
         hide.setInterpolator(new AnticipateInterpolator());
 
         AnimatorSet animations = new AnimatorSet();
@@ -115,5 +118,13 @@ public class ViewTranslator {
                 break;
         }
         return translation;
+    }
+
+    private static int getDuration(View context) {
+        if (duration == -1) {
+            duration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
+        }
+
+        return duration;
     }
 }
