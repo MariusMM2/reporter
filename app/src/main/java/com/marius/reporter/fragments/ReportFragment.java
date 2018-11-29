@@ -1,7 +1,9 @@
 package com.marius.reporter.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,7 +36,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class ReportFragment extends Fragment implements Report.Callbacks{
+public class ReportFragment extends Fragment implements Report.Callbacks {
     @SuppressWarnings("unused")
     private static final String TAG = ReportFragment.class.getSimpleName();
 
@@ -48,17 +51,21 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
     private TimeAdapter mAdapter;
 
+    private ViewGroup mMainLayout;
     private EditText mFlyerNameField;
     private AppCompatCheckBox mQuantityLeftLabel;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;
     private RecyclerView mTimeRecyclerView;
+    private CardView mTimeEditorView;
     private FloatingActionButton mAddTimeButton;
     private FloatingActionButton mSendReportButton;
     private FloatingActionButton mDebugDummyButton;
+    private View.OnTouchListener mEditorTouchListener;
 
     private ReportCheckTimer mSendFABTimer;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +73,23 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
+        mEditorTouchListener = (v, event) -> {
+            int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                // Notify touch outside listener if user tapped outside a given view
+                if (mTimeEditor != null && mTimeEditorView != null
+                        && mTimeEditorView.getVisibility() == View.VISIBLE) {
+                    Rect viewRect = new Rect();
+                    mTimeEditorView.getGlobalVisibleRect(viewRect);
+                    if (!viewRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                        ((OnTouchOutsideListener) mTimeEditor).onTouchOutsideView(mTimeEditorView, event);
+                        ReportFragment.this.onTimeDetach();
+                    }
+                }
+                return true;
+            }
+            return false;
+        };
 
         loadReport();
     }
@@ -79,18 +103,20 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
         mGpsNameField      = v.findViewById(R.id.gps_name);
+        mTimeRecyclerView  = v.findViewById(R.id.times_recycler_view);
+        mTimeEditorView    = v.findViewById(R.id.time_editor_card);
         mAddTimeButton     = v.findViewById(R.id.add_time_button);
         mSendReportButton  = v.findViewById(R.id.send_report_button);
-        mTimeRecyclerView  = v.findViewById(R.id.times_recycler_view);
         mDebugDummyButton  = v.findViewById(R.id.debug_dummy_button);
-        mTimeEditor.init(v.findViewById(R.id.time_editor_card));
+        mTimeEditor.init(v);
 
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mMainLayout = (ViewGroup) view;
+        mMainLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -98,7 +124,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             }
         });
 
-        mFlyerNameField.addTextChangedListener(new TextWatcher() {
+        mFlyerNameField   .addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -134,7 +160,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             public void afterTextChanged(Editable s) {
             }
         });
-        mGpsNameField.addTextChangedListener(new TextWatcher() {
+        mGpsNameField     .addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -149,11 +175,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
                 mSettings.gpsName = s.toString();
             }
         });
-        mAddTimeButton.setOnClickListener(v1 -> {
+        mAddTimeButton    .setOnClickListener(v1 -> {
             mReport.add(new Time());
-            mAdapter.notifyItemInserted(mAdapter.getItemCount()-1);
+            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
         });
-        mSendReportButton.setOnClickListener(v12 -> {
+        mSendReportButton .setOnClickListener(v12 -> {
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
@@ -171,6 +197,30 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mAdapter = new TimeAdapter(mReport);
         mTimeRecyclerView.setAdapter(mAdapter);
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mTimeRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {// && (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING)) {
+                    View childView = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+                    if (childView == null) {
+                        onTimeDetach();
+                    } else {
+//                        childView.performClick();
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+            }
+        });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
@@ -179,17 +229,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     @Override
     public void onStart() {
         super.onStart();
-        mSendFABTimer= new Timer("SendButtonUpdater", true);
-        Handler handler = new Handler();
-        mSendFABTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (mReport.hasChanged()) {
-                    handler.post(ReportFragment.this::updateSendFAB);
-                    mReport.confirmChanges();
-                }
-            }
-        }, 0, 500);
+        mSendFABTimer= new ReportCheckTimer();
     }
 
     @Override
@@ -252,10 +292,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mReport.setGPSName(mSettings.gpsName);
     }
 
-    private void setCurrentTime(Time time, CardView timeHolderCard) {
-        mTimeEditor.setCurrentTime(time, timeHolderCard);
-    }
-
     private void updateUI() {
         updateUIViews();
 
@@ -298,6 +334,12 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }
 
+    private void onTimeDetach() {
+        Log.d(TAG, "listener detached");
+        mMainLayout.setOnTouchListener(null);
+        mTimeEditor.detachTime();
+    }
+
     private String getReportOutput() {
         StringBuilder outputBuilder = new StringBuilder();
         String flyerName = getString(R.string.output_flyer_name, mReport.getFlyerName());
@@ -319,7 +361,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
         TimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_time, parent, false));
-            itemView.setOnClickListener(v -> ReportFragment.this.setCurrentTime(mTime, (CardView)v));
+            itemView.setOnClickListener(v -> {
+                if (v == mTimeEditor.getCurrentTime()) {
+                    return;
+                }
+                onTimeDetach();
+                mTimeEditor.attachTime(mTime, (CardView) v);
+                Log.d(TAG, "listener attached to " + mTime.toString());
+                mMainLayout.setOnTouchListener(mEditorTouchListener);
+            });
         }
 
         void bind(Time time) {
@@ -429,5 +479,20 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         private void onReportChanged() {
             mReportUpdated = true;
         }
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when a touch event has occurred outside a formerly specified
+     * view.
+     */
+    public interface OnTouchOutsideListener {
+
+        /**
+         * Called when a touch event has occurred outside a given view.
+         *
+         * @param view  The view that has not been touched.
+         * @param event The MotionEvent object containing full information about the event.
+         */
+        void onTouchOutsideView(View view, MotionEvent event);
     }
 }
