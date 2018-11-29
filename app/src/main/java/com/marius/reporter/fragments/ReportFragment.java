@@ -57,7 +57,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private FloatingActionButton mSendReportButton;
 
     private Timer mSendFABTimer;
-    private TimerTask mSendFABUpdateTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,17 +68,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
         loadReport();
 
-        mSendFABTimer= new Timer("SendButtonUpdater", true);
-        Handler handler = new Handler();
-        mSendFABUpdateTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (mReport.hasChanged()) {
-                    handler.post(ReportFragment.this::updateSendFAB);
-                    mReport.confirmChanges();
-                }
-            }
-        };
     }
 
     @Nullable
@@ -180,8 +168,22 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
+    }
 
-        mSendFABTimer.schedule(mSendFABUpdateTask, 0, 500);
+    @Override
+    public void onStart() {
+        super.onStart();
+        mSendFABTimer= new Timer("SendButtonUpdater", true);
+        Handler handler = new Handler();
+        mSendFABTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (mReport.hasChanged()) {
+                    handler.post(ReportFragment.this::updateSendFAB);
+                    mReport.confirmChanges();
+                }
+            }
+        }, 0, 500);
     }
 
     @Override
