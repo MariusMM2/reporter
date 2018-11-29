@@ -410,7 +410,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
 
     private class ReportCheckTimer extends Timer {
 
-        private boolean mReportUpdated;
+        private volatile boolean mReportUpdated;
 
         private ReportCheckTimer() {
             super("SendButtonUpdater", true);
