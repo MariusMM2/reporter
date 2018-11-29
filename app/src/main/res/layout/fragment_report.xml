@@ -100,8 +100,6 @@
             android:layout_gravity="center_horizontal"
             android:clipToPadding="true"
             android:fadingEdgeLength="40dp"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
             android:requiresFadingEdge="vertical"
             android:scrollbars="vertical">
 
@@ -216,5 +214,21 @@
         app:layout_constraintStart_toEndOf="@+id/time_input_card"
         app:layout_constraintTop_toBottomOf="@+id/times_card"
         app:srcCompat="@drawable/ic_add" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/debug_dummy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/time_editor_card"
+        app:layout_constraintEnd_toStartOf="@+id/time_editor_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/time_editor_card"
+        app:srcCompat="@drawable/ic_debug" />
 
 </android.support.constraint.ConstraintLayout>

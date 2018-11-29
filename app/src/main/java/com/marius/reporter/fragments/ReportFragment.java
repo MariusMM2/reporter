@@ -55,6 +55,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private RecyclerView mTimeRecyclerView;
     private FloatingActionButton mAddTimeButton;
     private FloatingActionButton mSendReportButton;
+    private FloatingActionButton mDebugDummyButton;
 
     private Timer mSendFABTimer;
 
@@ -67,7 +68,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         mTimeEditor = new TimeEditor();
 
         loadReport();
-
     }
 
     @Nullable
@@ -75,14 +75,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
-        mFlyerNameField = v.findViewById(R.id.flyer_name);
+        mFlyerNameField    = v.findViewById(R.id.flyer_name);
         mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
-        mGpsNameField = v.findViewById(R.id.gps_name);
-        mAddTimeButton = v.findViewById(R.id.add_time_button);
-        mSendReportButton = v.findViewById(R.id.send_report_button);
-        mTimeRecyclerView = v.findViewById(R.id.times_recycler_view);
-        mTimeEditor.init(v);
+        mGpsNameField      = v.findViewById(R.id.gps_name);
+        mAddTimeButton     = v.findViewById(R.id.add_time_button);
+        mSendReportButton  = v.findViewById(R.id.send_report_button);
+        mTimeRecyclerView  = v.findViewById(R.id.times_recycler_view);
+        mDebugDummyButton  = v.findViewById(R.id.debug_dummy_button);
+        mTimeEditor.init(v.findViewById(R.id.time_editor_card));
 
         return v;
     }
@@ -161,11 +162,16 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
             final Intent i2 = Intent.createChooser(i, getString(R.string.send_report));
             ViewTranslator.moveOffscreen(mSendReportButton, ViewTranslator.Direction.RIGHT, () -> startActivity(i2));
         });
+        mDebugDummyButton .setOnClickListener(v13 -> {
+            mReport = Report.dummy(this);
+            updateUI();
+        });
         updateUIViews();
 
         mAdapter = new TimeAdapter(mReport);
         mTimeRecyclerView.setAdapter(mAdapter);
         mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
         itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
     }
