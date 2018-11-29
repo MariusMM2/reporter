@@ -14,7 +14,6 @@ public class Report implements Serializable {
     private boolean mWithRemainingFlyers;
     private transient String mGPSName;
     private List<Time> mTimes;
-    private transient volatile boolean mChanged;
 
     public Report(Callbacks callbacks) {
         this(UUID.randomUUID(), callbacks);
@@ -43,8 +42,8 @@ public class Report implements Serializable {
     }
 
     public void setFlyerName(String flyerName) {
-        mChanged = true;
         mFlyerName = flyerName;
+        mCallBacks.reportChanged();
     }
 
     public short getRemainingFlyers() {
@@ -52,8 +51,9 @@ public class Report implements Serializable {
     }
 
     public void setRemainingFlyers(int remainingFlyers) {
-        mChanged = true;
         mRemainingFlyers = (short) remainingFlyers;
+        mCallBacks.reportChanged();
+
     }
 
     public String getGPSName() {
@@ -61,8 +61,8 @@ public class Report implements Serializable {
     }
 
     public void setGPSName(String GPSName) {
-        mChanged = true;
         mGPSName = GPSName;
+        mCallBacks.reportChanged();
     }
 
     public boolean isWithRemainingFlyers() {
@@ -70,8 +70,8 @@ public class Report implements Serializable {
     }
 
     public void setWithRemainingFlyers(boolean withRemainingFlyers) {
-        mChanged = true;
         mWithRemainingFlyers = withRemainingFlyers;
+        mCallBacks.reportChanged();
     }
 
     public boolean isReadyToSend() {
@@ -115,32 +115,21 @@ public class Report implements Serializable {
         return mTimes.size();
     }
     public boolean add(Time time) {
-        mChanged = true;
         boolean result = mTimes.add(time);
-        mCallBacks.onListUpdated();
+        mCallBacks.reportChanged();
         return result;
     }
     public void add(int index, Time element) {
-        mChanged = true;
         mTimes.add(index, element);
-        mCallBacks.onListUpdated();
+        mCallBacks.reportChanged();
     }
     public Time get(int index) {
         return mTimes.get(index);
     }
     public Time remove(int pos) {
-        mChanged = true;
         Time result = mTimes.remove(pos);
-        mCallBacks.onListUpdated();
+        mCallBacks.reportChanged();
         return result;
-    }
-
-    public boolean hasChanged() {
-        return mChanged;
-    }
-
-    public void confirmChanges() {
-        mChanged = false;
     }
 
     public static class Time implements Serializable {
@@ -189,6 +178,6 @@ public class Report implements Serializable {
     }
 
     public interface Callbacks {
-        void onListUpdated();
+        void reportChanged();
     }
 }

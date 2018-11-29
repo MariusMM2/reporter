@@ -57,7 +57,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     private FloatingActionButton mSendReportButton;
     private FloatingActionButton mDebugDummyButton;
 
-    private Timer mSendFABTimer;
+    private ReportCheckTimer mSendFABTimer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -294,7 +294,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
     }
 
     @Override
-    public void onListUpdated() {
+    public void reportChanged() {
+        if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }
 
     private String getReportOutput() {
@@ -405,5 +406,28 @@ public class ReportFragment extends Fragment implements Report.Callbacks{
         }
 
 
+    }
+
+    private class ReportCheckTimer extends Timer {
+
+        private boolean mReportUpdated;
+
+        private ReportCheckTimer() {
+            super("SendButtonUpdater", true);
+            Handler handler = new Handler();
+            this.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (mReportUpdated) {
+                        handler.post(ReportFragment.this::updateSendFAB);
+                        mReportUpdated = false;
+                    }
+                }
+            }, 0, 500);
+        }
+
+        private void onReportChanged() {
+            mReportUpdated = true;
+        }
     }
 }
