@@ -8,7 +8,7 @@
     android:layout_gravity="center_horizontal"
     android:layout_margin="10dp"
     app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="@dimen/view_normal"
+    app:cardElevation="@dimen/elevation_low"
     app:cardPreventCornerOverlap="false"
     app:contentPadding="2dp">
 
