@@ -6,8 +6,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import com.marius.reporter.R;
 
@@ -22,8 +22,8 @@ public class ViewTranslator {
 
     private static int duration = -1;
 
-    public static void moveToBehind(View mainView, View converView) {
-        moveToBehind(mainView, converView, getDuration(mainView));
+    public static void moveToBehind(View mainView, View coverView) {
+        moveToBehind(mainView, coverView, getDuration(mainView));
     }
 
     public static void moveToBehind(View mainView, View coverView, int duration) {
@@ -31,8 +31,6 @@ public class ViewTranslator {
         final int[] coverViewPos = new int[2]; coverView.getLocationOnScreen(coverViewPos);
         final float mainViewCenterX = mainViewPos[1] + (float)mainView.getHeight()  / 2;
         final float coverViewCenterX = coverViewPos[1] + (float)coverView.getHeight()  / 2;
-        System.out.println(mainView.getX());
-        System.out.println(coverView.getX());
 
         if (mainViewCenterX == coverViewCenterX) return;
 
@@ -43,7 +41,7 @@ public class ViewTranslator {
         ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.view_elevated, duration);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 360);
         rotate.setDuration(duration);
-        rotate.setInterpolator(new DecelerateInterpolator());
+        rotate.setInterpolator(new AccelerateDecelerateInterpolator());
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(hide).after(elevate);
@@ -52,7 +50,7 @@ public class ViewTranslator {
     }
 
     public static void moveFromBehind(View mainView, View coverView) {
-        moveFromBehind(mainView, coverView, getDuration(mainView)/2);
+        moveFromBehind(mainView, coverView, getDuration(mainView));
     }
 
     public static void moveFromBehind(View mainView, View coverView, int duration) {
@@ -63,7 +61,7 @@ public class ViewTranslator {
         ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.view_normal, duration);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 0);
         rotate.setDuration(duration);
-        rotate.setInterpolator(new DecelerateInterpolator());
+        rotate.setInterpolator(new AccelerateDecelerateInterpolator());
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(show).before(elevate);
