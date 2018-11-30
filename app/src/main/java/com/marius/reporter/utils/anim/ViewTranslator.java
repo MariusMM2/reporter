@@ -45,7 +45,7 @@ public class ViewTranslator {
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(hide).after(elevate);
-        animations.play(elevate).with(rotate);
+        animations.play(hide).with(rotate);
         animations.start();
     }
 
@@ -65,7 +65,7 @@ public class ViewTranslator {
 
         AnimatorSet animations = new AnimatorSet();
         animations.play(show).before(elevate);
-        animations.play(elevate).with(rotate);
+        animations.play(show).with(rotate);
         animations.start();
     }
 
