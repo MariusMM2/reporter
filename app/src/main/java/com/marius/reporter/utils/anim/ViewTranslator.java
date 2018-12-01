@@ -5,10 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.graphics.Point;
+import android.util.Property;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.OvershootInterpolator;
+import android.view.animation.*;
 import com.marius.reporter.R;
 
 public class ViewTranslator {
@@ -34,12 +35,12 @@ public class ViewTranslator {
 
         if (mainViewCenterX == coverViewCenterX) return;
 
-        ObjectAnimator hide = ObjectAnimator.ofFloat(mainView, "translationY", coverViewCenterX - mainViewCenterX);
+        ObjectAnimator hide = ObjectAnimator.ofFloat(mainView, View.TRANSLATION_Y, coverViewCenterX - mainViewCenterX);
         hide.setDuration((int)(duration*0.75));
         hide.setInterpolator(new AnticipateInterpolator());
 
         ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.elevation_high, duration);
-        ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 360);
+        ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, View.ROTATION, 360);
         rotate.setDuration(duration);
         rotate.setInterpolator(new AccelerateDecelerateInterpolator());
 
@@ -54,7 +55,7 @@ public class ViewTranslator {
     }
 
     public static void moveFromBehind(View mainView, View coverView, int duration) {
-        ObjectAnimator show = ObjectAnimator.ofFloat(mainView, "translationY", 0);
+        ObjectAnimator show = ObjectAnimator.ofFloat(mainView, View.TRANSLATION_Y, 0);
         show.setDuration(duration);
         show.setInterpolator(new OvershootInterpolator());
 
@@ -95,6 +96,76 @@ public class ViewTranslator {
             }
         });
         animations.start();
+    }
+
+    public static void slideInAndShow(View view, Direction direction) {
+        slideInAndShow(view, direction, getDuration(view));
+    }
+
+    public static void slideInAndShow(View view, Direction direction, int duration) {
+        Property translation = null;
+        switch (direction) {
+            case LEFT: case RIGHT:
+                translation = View.TRANSLATION_X;
+                break;
+            case UP: case DOWN:
+                translation = View.TRANSLATION_Y;
+                break;
+        }
+
+        @SuppressWarnings("unchecked")
+        ObjectAnimator slide = ObjectAnimator.ofFloat(view, translation, 0.0f);
+        slide.setDuration(duration);
+        slide.setInterpolator(new DecelerateInterpolator());
+
+        ObjectAnimator fade = ObjectAnimator.ofFloat(view, View.ALPHA, 1);
+        fade.setDuration(duration);
+
+        AnimatorSet set = new AnimatorSet();
+        set.play(slide).with(fade);
+        set.start();
+    }
+
+    public static void slideOutAndHide(View view, Direction direction) {
+        slideOutAndHide(view, direction, getDuration(view));
+    }
+
+    public static void slideOutAndHide(View view, Direction direction, int duration) {
+        Point size = new Point();
+        ((Activity)view.getContext()).getWindowManager().getDefaultDisplay().getSize(size);
+
+        Property translation = null;
+        float delta = 0;
+        switch (direction) {
+            case LEFT:
+                translation = View.TRANSLATION_X;
+                delta = -view.getRight();
+                break;
+            case RIGHT:
+                translation = View.TRANSLATION_X;
+                delta = size.x - view.getLeft();
+                break;
+            case UP:
+                translation = View.TRANSLATION_Y;
+                delta = -view.getBottom();
+                break;
+            case DOWN:
+                translation = View.TRANSLATION_Y;
+                delta = size.y - view.getTop();
+                break;
+        }
+
+        @SuppressWarnings("unchecked")
+        ObjectAnimator slide = ObjectAnimator.ofFloat(view, translation, delta);
+        slide.setDuration(duration);
+        slide.setInterpolator(new AccelerateInterpolator());
+
+        ObjectAnimator fade = ObjectAnimator.ofFloat(view, View.ALPHA, 0.0f);
+        fade.setDuration(duration);
+
+        AnimatorSet set = new AnimatorSet();
+        set.play(slide).with(fade);
+        set.start();
     }
 
     private static ObjectAnimator moveOffscreenReset(View view, Direction direction) {

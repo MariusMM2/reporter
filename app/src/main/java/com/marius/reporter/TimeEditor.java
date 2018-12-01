@@ -7,6 +7,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.marius.reporter.fragments.ReportFragment;
 import com.marius.reporter.utils.anim.ViewElevator;
+import com.marius.reporter.utils.anim.ViewTranslator;
+import com.marius.reporter.utils.anim.ViewTranslator.Direction;
 
 import java.util.Locale;
 
@@ -16,19 +18,22 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
             SECOND = 2;
 
     private NumberPicker[] mPickers;
-    private CardView mTimeHolderCard;
+    private View mContainer;
+    private View mTimeHolderCard;
     private Report.Time mTime;
+    private static final Direction SLIDE_DIR = Direction.DOWN;
 
     public TimeEditor() {
         mTime = new Report.Time();
         mPickers = new NumberPicker[3];
     }
 
-    public void init(View parent) {
+    public void init(View container) {
+        mContainer = container;
 
-        mPickers[HOUR]   = parent.findViewById(R.id.hour_picker);
-        mPickers[MINUTE] = parent.findViewById(R.id.minute_picker);
-        mPickers[SECOND] = parent.findViewById(R.id.second_picker);
+        mPickers[HOUR]   = mContainer.findViewById(R.id.hour_picker);
+        mPickers[MINUTE] = mContainer.findViewById(R.id.minute_picker);
+        mPickers[SECOND] = mContainer.findViewById(R.id.second_picker);
 
         mPickers[HOUR]  .setMaxValue(23);
         mPickers[MINUTE].setMaxValue(59);
@@ -74,8 +79,19 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
 
         mTime = null;
 
-        for (NumberPicker n : mPickers) n.setValue(0);
         for (NumberPicker n : mPickers) n.setEnabled(false);
+    }
+
+    public void show() {
+        ViewTranslator.slideInAndShow(mContainer, SLIDE_DIR);
+    }
+
+    public void hide() {
+        ViewTranslator.slideOutAndHide(mContainer, SLIDE_DIR);
+    }
+
+    public void hideNow() {
+        ViewTranslator.slideOutAndHide(mContainer, SLIDE_DIR, 0);
     }
 
     private static String format(int value) {

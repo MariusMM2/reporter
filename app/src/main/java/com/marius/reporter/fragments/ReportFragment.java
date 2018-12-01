@@ -61,7 +61,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     private FloatingActionButton mAddTimeButton;
     private FloatingActionButton mSendReportButton;
     private FloatingActionButton mDebugDummyButton;
-    private View.OnTouchListener mEditorTouchListener;
+    private View.OnTouchListener mTimeEditorTouchListener;
 
     private ReportCheckTimer mSendFABTimer;
 
@@ -73,7 +73,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
         setHasOptionsMenu(true);
         mTimeEditor = new TimeEditor();
-        mEditorTouchListener = (v, event) -> {
+        mTimeEditorTouchListener = (v, event) -> {
             int action = event.getAction();
             if (action == MotionEvent.ACTION_DOWN) {
                 // Notify touch outside listener if user tapped outside a given view
@@ -83,7 +83,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
                     mTimeEditorView.getGlobalVisibleRect(viewRect);
                     if (!viewRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                         ((OnTouchOutsideListener) mTimeEditor).onTouchOutsideView(mTimeEditorView, event);
-                        ReportFragment.this.onTimeDetach();
+                        ReportFragment.this.detachTime();
                     }
                 }
                 return true;
@@ -108,7 +108,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mAddTimeButton     = v.findViewById(R.id.add_time_button);
         mSendReportButton  = v.findViewById(R.id.send_report_button);
         mDebugDummyButton  = v.findViewById(R.id.debug_dummy_button);
-        mTimeEditor.init(v);
+        mTimeEditor.init(mTimeEditorView);
 
         return v;
     }
@@ -121,6 +121,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             public void onGlobalLayout() {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 updateSendFAB(0);
+
+                mTimeEditor.hideNow();
             }
         });
 
@@ -200,10 +202,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mTimeRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {// && (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING)) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     View childView = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
                     if (childView == null) {
-                        onTimeDetach();
+                        detachTime();
                     } else {
 //                        childView.performClick();
                     }
@@ -334,10 +336,21 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }
 
-    private void onTimeDetach() {
+    private void detachTime() {
         Log.d(TAG, "listener detached");
         mMainLayout.setOnTouchListener(null);
         mTimeEditor.detachTime();
+        mTimeEditor.hide();
+    }
+
+    private void attachTime(View v, Time time) {
+        if (v == mTimeEditor.getCurrentTime()) return;
+        detachTime();
+        mTimeEditor.attachTime(time, (CardView) v);
+        Log.d(TAG, "listener attached to " + time.toString());
+        mMainLayout.setOnTouchListener(mTimeEditorTouchListener);
+        mTimeEditor.show();
+
     }
 
     private String getReportOutput() {
@@ -361,15 +374,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
         TimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_time, parent, false));
-            itemView.setOnClickListener(v -> {
-                if (v == mTimeEditor.getCurrentTime()) {
-                    return;
-                }
-                onTimeDetach();
-                mTimeEditor.attachTime(mTime, (CardView) v);
-                Log.d(TAG, "listener attached to " + mTime.toString());
-                mMainLayout.setOnTouchListener(mEditorTouchListener);
-            });
+            itemView.setOnClickListener(v -> attachTime(v, mTime));
         }
 
         void bind(Time time) {
