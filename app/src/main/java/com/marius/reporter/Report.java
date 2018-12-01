@@ -1,10 +1,9 @@
 package com.marius.reporter;
 
+import de.svenjacobs.loremipsum.LoremIpsum;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 public class Report implements Serializable {
     private transient Callbacks mCallBacks;
@@ -99,13 +98,22 @@ public class Report implements Serializable {
     @SuppressWarnings("SpellCheckingInspection")
     public static Report dummy(Callbacks callbacks) {
         Report report = new Report(callbacks);
-        report.setFlyerName("diam ut venenatis tellus in");
-        report.setGPSName("suspendisse");
-        report.setWithRemainingFlyers(true);
-        report.setRemainingFlyers(420);
-        for (int i = 0; i < 10; i++) {
-            report.add(new Time(10, 20, 30));
-        }
+
+        Random rand = new Random();
+        LoremIpsum loremIpsum = new LoremIpsum();
+
+        int x = rand.nextInt(49);
+        String dummyName = loremIpsum.getWords(20, x);
+        report.setFlyerName(dummyName);
+
+        report.setGPSName(loremIpsum.getWords(1, x));
+
+        report.setWithRemainingFlyers(rand.nextBoolean());
+
+        report.setRemainingFlyers(rand.nextInt(1001));
+
+        for (int i = 0; i < 20; i++)
+            report.add(new Time(rand.nextInt(24), rand.nextInt(60), rand.nextInt(60)));
 
         return report;
     }
