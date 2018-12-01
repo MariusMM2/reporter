@@ -39,7 +39,7 @@ public class ViewTranslator {
         hide.setDuration((int)(duration*0.75));
         hide.setInterpolator(new AnticipateInterpolator());
 
-        ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.elevation_high, duration);
+        ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.fab_elevation_high, duration);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, View.ROTATION, 360);
         rotate.setDuration(duration);
         rotate.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -59,7 +59,7 @@ public class ViewTranslator {
         show.setDuration(duration);
         show.setInterpolator(new OvershootInterpolator());
 
-        ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.elevation_low, duration);
+        ObjectAnimator elevate = ViewElevator.elevate(coverView, R.dimen.fab_elevation_low, duration);
         ObjectAnimator rotate = ObjectAnimator.ofFloat(coverView, "rotation", 0);
         rotate.setDuration(duration);
         rotate.setInterpolator(new AccelerateDecelerateInterpolator());

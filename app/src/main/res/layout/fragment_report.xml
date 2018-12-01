@@ -15,6 +15,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="2dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/gps_name"
-                android:inputType="text"
                 android:imeOptions="actionDone"
+                android:inputType="text"
                 tools:text="@sample/tools:lorem" />
 
         </LinearLayout>
@@ -86,9 +87,10 @@
         android:layout_marginTop="8dp"
         android:descendantFocusability="blocksDescendants"
         app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="2dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/time_editor_card"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_card">
@@ -117,6 +119,7 @@
         android:layout_weight="1"
         android:descendantFocusability="blocksDescendants"
         app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -193,7 +196,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        app:elevation="2dp"
+        app:elevation="4dp"
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/add_time_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -220,15 +223,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:clickable="true"
+        app:elevation="4dp"
         app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/time_editor_card"
-        app:layout_constraintEnd_toStartOf="@+id/time_editor_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/time_editor_card"
+        app:layout_constraintBottom_toBottomOf="@+id/text_card"
+        app:layout_constraintStart_toStartOf="@+id/text_card"
         app:srcCompat="@drawable/ic_debug" />
 
 </android.support.constraint.ConstraintLayout>
