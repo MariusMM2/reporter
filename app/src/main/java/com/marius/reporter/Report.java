@@ -1,6 +1,7 @@
 package com.marius.reporter;
 
-import de.svenjacobs.loremipsum.LoremIpsum;
+import com.thedeanda.lorem.Lorem;
+import com.thedeanda.lorem.LoremIpsum;
 
 import java.io.Serializable;
 import java.util.*;
@@ -100,16 +101,11 @@ public class Report implements Serializable {
         Report report = new Report(callbacks);
 
         Random rand = new Random();
-        LoremIpsum loremIpsum = new LoremIpsum();
+        Lorem lorem = LoremIpsum.getInstance();
 
-        int x = rand.nextInt(49);
-        String dummyName = loremIpsum.getWords(20, x);
-        report.setFlyerName(dummyName);
-
-        report.setGPSName(loremIpsum.getWords(1, x));
-
+        report.setFlyerName(lorem.getTitle(10));
+        report.setGPSName(lorem.getName());
         report.setWithRemainingFlyers(rand.nextBoolean());
-
         report.setRemainingFlyers(rand.nextInt(1001));
 
         for (int i = 0; i < 20; i++)
