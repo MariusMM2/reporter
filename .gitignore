@@ -6,6 +6,7 @@
 .idea/**/shelf
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+.idea/**/uiDesigner.xml
 .idea/**/usage.statistics.xml
 .idea/**/statistic.xml
 .idea/**/assetWizardSettings.xml
@@ -19,12 +20,13 @@
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
+.idea/**/uiDesigner.xml/.idea/vcs.xml
+
 .idea/**/dbnavigator.xml
 
 # Gradle
 .idea/**/gradle.xml
-.idea/**/libraries
+.idea/**/libraries/Gradle__*
 .gradle
 
 # Gradle and Maven with auto-import
