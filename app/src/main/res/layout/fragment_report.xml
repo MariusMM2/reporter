@@ -30,12 +30,12 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/flyer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/flyer_name"
-                android:inputType="text|textAutoCorrect|textAutoComplete|textMultiLine"
+                android:inputType="text|textMultiLine"
                 android:lines="3"
                 tools:text="@sample/tools:lorem/random" />
 

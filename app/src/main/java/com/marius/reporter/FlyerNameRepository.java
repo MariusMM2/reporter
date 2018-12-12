@@ -32,7 +32,14 @@ public class FlyerNameRepository {
     public void addFlyerName(String flyerName) {
         ContentValues values = getContentValues(flyerName);
 
-        mDatabase.insert(FlyerNameTable.NAME, null, values);
+        try (FlyerNameCursorWrapper cursor = queryFlyerNames(
+                FlyerNameTable.Cols.VALUE + " = ?",
+                new String[]{flyerName})
+        ) {
+            if (cursor.getCount() == 0) {
+                mDatabase.insert(FlyerNameTable.NAME, null, values);
+            }
+        }
     }
 
     public String[] getFlyerNames() {

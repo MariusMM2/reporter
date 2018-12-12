@@ -20,13 +20,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.marius.reporter.R;
-import com.marius.reporter.Report;
+import com.marius.reporter.*;
 import com.marius.reporter.Report.Time;
-import com.marius.reporter.Settings;
-import com.marius.reporter.TimeEditor;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.io.*;
@@ -46,22 +45,24 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     }
 
     private Settings mSettings;
-    private Report mReport;
-    private TimeEditor mTimeEditor;
-
-    private TimeAdapter mAdapter;
 
     private ViewGroup mMainLayout;
-    private EditText mFlyerNameField;
+    private AutoCompleteTextView mFlyerNameField;
     private AppCompatCheckBox mQuantityLeftLabel;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;
-    private RecyclerView mTimeRecyclerView;
+    private RecyclerView mTimeListView;
     private CardView mTimeEditorView;
     private FloatingActionButton mAddTimeButton;
     private FloatingActionButton mSendReportButton;
     private FloatingActionButton mDebugDummyButton;
     private View.OnTouchListener mTimeEditorTouchListener;
+
+    private TimeAdapter mTimeListAdapter;
+    private ArrayAdapter<String> mFlyerNameArrayAdapter;
+
+    private Report mReport;
+    private TimeEditor mTimeEditor;
 
     private ReportCheckTimer mSendFABTimer;
 
@@ -103,7 +104,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
         mGpsNameField      = v.findViewById(R.id.gps_name);
-        mTimeRecyclerView  = v.findViewById(R.id.times_recycler_view);
+        mTimeListView = v.findViewById(R.id.times_recycler_view);
         mTimeEditorView    = v.findViewById(R.id.time_editor_card);
         mAddTimeButton     = v.findViewById(R.id.add_time_button);
         mSendReportButton  = v.findViewById(R.id.send_report_button);
@@ -179,9 +180,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         });
         mAddTimeButton    .setOnClickListener(v1 -> {
             mReport.add(new Time());
-            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+            mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
         });
         mSendReportButton .setOnClickListener(v12 -> {
+            FlyerNameRepository.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
@@ -194,12 +196,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             mReport = Report.dummy(this);
             updateUI();
         });
+
+        mFlyerNameArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        mFlyerNameField.setAdapter(mFlyerNameArrayAdapter);
         updateUIViews();
 
-        mAdapter = new TimeAdapter(mReport);
-        mTimeRecyclerView.setAdapter(mAdapter);
-        mTimeRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        mTimeRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+        mTimeListAdapter = new TimeAdapter(mReport);
+        mTimeListView.setAdapter(mTimeListAdapter);
+        mTimeListView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mTimeListView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -224,8 +229,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             }
         });
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
-        itemTouchHelper.attachToRecyclerView(mTimeRecyclerView);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mTimeListAdapter));
+        itemTouchHelper.attachToRecyclerView(mTimeListView);
     }
 
     @Override
@@ -297,8 +302,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     private void updateUI() {
         updateUIViews();
 
-        mAdapter.setReport(mReport);
-        mAdapter.notifyDataSetChanged();
+        mTimeListAdapter.setReport(mReport);
+        mTimeListAdapter.notifyDataSetChanged();
+        mFlyerNameArrayAdapter.clear();
+        mFlyerNameArrayAdapter.addAll(FlyerNameRepository.getInstance(getActivity()).getFlyerNames());
+        mFlyerNameArrayAdapter.notifyDataSetChanged();
     }
 
     private void updateUIViews() {
