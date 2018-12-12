@@ -30,11 +30,10 @@ import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.io.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@SuppressWarnings("FieldCanBeLocal")
+@SuppressWarnings({"FieldCanBeLocal", "ConstantConditions"})
 public class ReportFragment extends Fragment implements Report.Callbacks {
     @SuppressWarnings("unused")
     private static final String TAG = ReportFragment.class.getSimpleName();
@@ -211,8 +210,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
                     View childView = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
                     if (childView == null) {
                         detachTime();
-                    } else {
-//                        childView.performClick();
                     }
                 }
                 return false;
@@ -274,7 +271,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     private void saveReport() {
         try (
-                FileOutputStream fos = Objects.requireNonNull(getActivity()).openFileOutput("currentReport", Context.MODE_PRIVATE);
+                FileOutputStream fos = getActivity().openFileOutput("currentReport", Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
         ) {
             oos.writeObject(mReport);
@@ -287,7 +284,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mReport = new Report(this);
 
         try (
-                FileInputStream fis = Objects.requireNonNull(getActivity()).openFileInput("currentReport");
+                FileInputStream fis = getActivity().openFileInput("currentReport");
                 ObjectInputStream ois = new ObjectInputStream(fis)
         ) {
             mReport = (Report) ois.readObject();
@@ -434,7 +431,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         }
 
         private void showUndoSnackbar() {
-            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.constraint_layout);
+            View view = getActivity().findViewById(R.id.constraint_layout);
             Snackbar snackbar = Snackbar.make(view, "Time Deleted", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> undoDelete());
             snackbar.show();
