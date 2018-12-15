@@ -28,10 +28,10 @@ import com.marius.reporter.*;
 import com.marius.reporter.Report.Time;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
-import java.io.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 @SuppressWarnings({"FieldCanBeLocal", "ConstantConditions"})
 public class ReportFragment extends Fragment implements Report.Callbacks {
@@ -40,10 +40,12 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     @SuppressWarnings("unused")
     private class Arg {
-        private static final String REPORT = "report";
+        private static final String REPORT_ID = "report_id";
     }
 
     private Settings mSettings;
+
+    private Callbacks mCallbacks;
 
     private ViewGroup mMainLayout;
     private AutoCompleteTextView mFlyerNameField;
@@ -64,6 +66,24 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     private TimeEditor mTimeEditor;
 
     private ReportCheckTimer mSendFABTimer;
+
+    public interface Callbacks {
+        void onReportUpdated(Report report);
+    }
+
+    public static ReportFragment newInstance(UUID reportId) {
+        Bundle args = new Bundle();
+        args.putSerializable(Arg.REPORT_ID, reportId);
+        ReportFragment fragment = new ReportFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -91,7 +111,9 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             return false;
         };
 
-        loadReport();
+        UUID reportId = (UUID) getArguments().getSerializable(Arg.REPORT_ID);
+        mReport = ReportRepo.getInstance(getActivity()).getReport(reportId);
+        mReport.setCallBacks(this);
     }
 
     @Nullable
@@ -182,7 +204,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
         });
         mSendReportButton .setOnClickListener(v12 -> {
-            FlyerNameRepository.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
+            FlyerNameRepo.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
@@ -192,7 +214,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             ViewTranslator.moveOffscreen(mSendReportButton, ViewTranslator.Direction.RIGHT, () -> startActivity(i2));
         });
         mDebugDummyButton .setOnClickListener(v13 -> {
-            mReport = Report.dummy(this);
+            mReport.from(Report.dummy());
+//            reportChanged();
             updateUI();
         });
 
@@ -253,7 +276,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.reset_report:
-                mReport = new Report(this);
+                mReport.reset();
+                mReport.setCallBacks(this);
                 mReport.setGPSName(mSettings.gpsName);
                 updateUI();
                 return true;
@@ -263,37 +287,26 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        updateReport();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
-        saveReport();
         mSendFABTimer.cancel();
     }
 
-    private void saveReport() {
-        try (
-                FileOutputStream fos = getActivity().openFileOutput("currentReport", Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos)
-        ) {
-            oos.writeObject(mReport);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
-    private void loadReport() {
-        mReport = new Report(this);
-
-        try (
-                FileInputStream fis = getActivity().openFileInput("currentReport");
-                ObjectInputStream ois = new ObjectInputStream(fis)
-        ) {
-            mReport = (Report) ois.readObject();
-            mReport.setCallBacks(this);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        mReport.setGPSName(mSettings.gpsName);
+    private void updateReport() {
+        ReportRepo.getInstance(getActivity()).updateReport(mReport);
+        mCallbacks.onReportUpdated(mReport);
     }
 
     private void updateUI() {
@@ -302,7 +315,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mTimeListAdapter.setReport(mReport);
         mTimeListAdapter.notifyDataSetChanged();
         mFlyerNameArrayAdapter.clear();
-        mFlyerNameArrayAdapter.addAll(FlyerNameRepository.getInstance(getActivity()).getFlyerNames());
+        mFlyerNameArrayAdapter.addAll(FlyerNameRepo.getInstance(getActivity()).getFlyerNames());
         mFlyerNameArrayAdapter.notifyDataSetChanged();
     }
 
@@ -338,6 +351,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     @Override
     public void reportChanged() {
+        mCallbacks.onReportUpdated(mReport);
         if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }
 
@@ -464,8 +478,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
             mAdapter.deleteTime(position);
         }
-
-
     }
 
     private class ReportCheckTimer extends Timer {

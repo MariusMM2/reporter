@@ -8,19 +8,18 @@ import java.util.*;
 
 public class Report implements Serializable {
     private transient Callbacks mCallBacks;
-    private final UUID mId;
+    private UUID mId;
     private String mFlyerName;
     private short mRemainingFlyers;
     private boolean mWithRemainingFlyers;
     private transient String mGPSName;
     private List<Time> mTimes;
 
-    public Report(Callbacks callbacks) {
-        this(UUID.randomUUID(), callbacks);
+    public Report() {
+        this(UUID.randomUUID());
     }
 
-    public Report(UUID id, Callbacks callbacks) {
-        mCallBacks = callbacks;
+    public Report(UUID id) {
         mId = id;
         mFlyerName = "";
         mRemainingFlyers = 0;
@@ -43,7 +42,7 @@ public class Report implements Serializable {
 
     public void setFlyerName(String flyerName) {
         mFlyerName = flyerName;
-        mCallBacks.reportChanged();
+        notifyChange();
     }
 
     public short getRemainingFlyers() {
@@ -52,7 +51,7 @@ public class Report implements Serializable {
 
     public void setRemainingFlyers(int remainingFlyers) {
         mRemainingFlyers = (short) remainingFlyers;
-        mCallBacks.reportChanged();
+        notifyChange();
 
     }
 
@@ -62,7 +61,7 @@ public class Report implements Serializable {
 
     public void setGPSName(String GPSName) {
         mGPSName = GPSName;
-        mCallBacks.reportChanged();
+        notifyChange();
     }
 
     public boolean isWithRemainingFlyers() {
@@ -71,7 +70,7 @@ public class Report implements Serializable {
 
     public void setWithRemainingFlyers(boolean withRemainingFlyers) {
         mWithRemainingFlyers = withRemainingFlyers;
-        mCallBacks.reportChanged();
+        notifyChange();
     }
 
     public boolean isReadyToSend() {
@@ -96,20 +95,36 @@ public class Report implements Serializable {
         return timesBuilder.toString();
     }
 
+    public void reset() {
+        mFlyerName = "";
+        mRemainingFlyers = 0;
+        mWithRemainingFlyers = true;
+        mTimes.clear();
+        notifyChange();
+    }
+
+    public void from(Report newReport) {
+        this.mFlyerName = newReport.mFlyerName;
+        this.mGPSName = newReport.mGPSName;
+        this.mWithRemainingFlyers = newReport.mWithRemainingFlyers;
+        this.mRemainingFlyers = newReport.mRemainingFlyers;
+        this.mTimes = newReport.mTimes;
+    }
+
     @SuppressWarnings("SpellCheckingInspection")
-    public static Report dummy(Callbacks callbacks) {
-        Report report = new Report(callbacks);
+    public static Report dummy() {
+        Report report = new Report();
 
         Random rand = new Random();
         Lorem lorem = LoremIpsum.getInstance();
 
-        report.setFlyerName(lorem.getTitle(10));
-        report.setGPSName(lorem.getName());
-        report.setWithRemainingFlyers(rand.nextBoolean());
-        report.setRemainingFlyers(rand.nextInt(1001));
+        report.mFlyerName = lorem.getTitle(10);
+        report.mGPSName = lorem.getName();
+        report.mWithRemainingFlyers = rand.nextBoolean();
+        report.mRemainingFlyers = (short) rand.nextInt(1001);
 
         for (int i = 0; i < 20; i++)
-            report.add(new Time(rand.nextInt(24), rand.nextInt(60), rand.nextInt(60)));
+            report.mTimes.add(new Time(rand.nextInt(24), rand.nextInt(60), rand.nextInt(60)));
 
         return report;
     }
@@ -120,20 +135,27 @@ public class Report implements Serializable {
     }
     public boolean add(Time time) {
         boolean result = mTimes.add(time);
-        mCallBacks.reportChanged();
+        notifyChange();
         return result;
     }
     public void add(int index, Time element) {
         mTimes.add(index, element);
-        mCallBacks.reportChanged();
+        notifyChange();
     }
     public Time get(int index) {
         return mTimes.get(index);
     }
+
     public Time remove(int pos) {
         Time result = mTimes.remove(pos);
-        mCallBacks.reportChanged();
+        notifyChange();
         return result;
+    }
+
+    private void notifyChange() {
+        if (mCallBacks != null) {
+            mCallBacks.reportChanged();
+        }
     }
 
     public static class Time implements Serializable {

@@ -11,12 +11,12 @@ import com.marius.reporter.database.flyername.FlyerNameDbSchema.FlyerNameTable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlyerNameRepository {
-    private static FlyerNameRepository instance;
+public class FlyerNameRepo {
+    private static FlyerNameRepo instance;
 
-    public static FlyerNameRepository getInstance(Context context) {
+    public static FlyerNameRepo getInstance(Context context) {
         if (instance == null) {
-            instance = new FlyerNameRepository(context);
+            instance = new FlyerNameRepo(context);
         }
         return instance;
     }
@@ -24,7 +24,7 @@ public class FlyerNameRepository {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    public FlyerNameRepository(Context context) {
+    public FlyerNameRepo(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new FlyerNameBaseHelper(mContext).getWritableDatabase();
     }
