@@ -52,7 +52,6 @@ public class Report implements Serializable {
     public void setRemainingFlyers(int remainingFlyers) {
         mRemainingFlyers = (short) remainingFlyers;
         notifyChange();
-
     }
 
     public String getGPSName() {
@@ -123,8 +122,13 @@ public class Report implements Serializable {
         report.mWithRemainingFlyers = rand.nextBoolean();
         report.mRemainingFlyers = (short) rand.nextInt(1001);
 
-        for (int i = 0; i < 20; i++)
-            report.mTimes.add(new Time(rand.nextInt(24), rand.nextInt(60), rand.nextInt(60)));
+        for (int i = 0; i < 20; i++) {
+            Time time = new Time();
+            time.setHours(rand.nextInt(24));
+            time.setMinutes(rand.nextInt(60));
+            time.setSeconds(rand.nextInt(60));
+            report.mTimes.add(time);
+        }
 
         return report;
     }
@@ -162,16 +166,6 @@ public class Report implements Serializable {
         private byte hours;
         private byte minutes;
         private byte seconds;
-
-        public Time() {
-            this(0, 0, 0);
-        }
-
-        public Time(int hours, int minutes, int seconds) {
-            setHours(hours);
-            setMinutes(minutes);
-            setSeconds(seconds);
-        }
 
         public byte getHours() {
             return hours;

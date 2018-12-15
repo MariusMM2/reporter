@@ -151,7 +151,6 @@ public class ReportListFragment extends Fragment {
         private List<Report> mReports;
         private View mSelectedHolderView;
         private Report mRecentlyDeletedReport;
-        private int mRecentlyDeletedReportPosition;
 
         ReportAdapter(List<Report> reports) {
             mReports = reports;
@@ -200,8 +199,8 @@ public class ReportListFragment extends Fragment {
         }
 
         private void deleteReport(int position) {
-            mRecentlyDeletedReport = ReportRepo.getInstance(getActivity()).deleteReport(position);
-            mRecentlyDeletedReportPosition = position;
+            mRecentlyDeletedReport = mReports.remove(position);
+            mRecentlyDeletedReport = ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
             mCallbacks.onReportDeleted(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
@@ -216,8 +215,9 @@ public class ReportListFragment extends Fragment {
         }
 
         private void undoDelete() {
-            ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReportPosition, mRecentlyDeletedReport);
-            notifyItemInserted(mRecentlyDeletedReportPosition);
+            ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReport);
+            mReports.add(mRecentlyDeletedReport);
+            notifyItemInserted(mReports.indexOf(mRecentlyDeletedReport));
         }
     }
 

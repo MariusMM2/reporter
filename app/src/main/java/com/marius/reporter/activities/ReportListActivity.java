@@ -54,7 +54,6 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
 
     @Override
     public void onReportUpdated(Report report) {
-
         ReportListFragment listFragment = (ReportListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
         listFragment.updateUI();
