@@ -47,9 +47,15 @@ public class ReportRepo {
         return null;
     }
 
-    public void updateReport(Report report) {
-        final Report oldReport = getReport(report.getId());
-        mReports.set(mReports.indexOf(oldReport), report);
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean updateReport(Report report) {
+        final int index = mReports.indexOf(getReport(report.getId()));
+        if (index == -1) {
+            return false;
+        } else {
+            mReports.set(index, report);
+            return true;
+        }
     }
 
     public Report deleteReport(int index) {

@@ -113,6 +113,9 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
         UUID reportId = (UUID) getArguments().getSerializable(Arg.REPORT_ID);
         mReport = ReportRepo.getInstance(getActivity()).getReport(reportId);
+        if (mReport == null) {
+//            this.
+        }
         mReport.setCallBacks(this);
     }
 

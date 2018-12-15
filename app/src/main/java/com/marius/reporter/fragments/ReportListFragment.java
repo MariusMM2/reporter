@@ -39,6 +39,7 @@ public class ReportListFragment extends Fragment {
     public interface Callbacks {
         void onReportSelected(Report report);
 
+        void onReportDeleted(Report report);
         boolean isMasterDetail();
     }
 
@@ -142,7 +143,6 @@ public class ReportListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             mCallbacks.onReportSelected(mReport);
-//            ViewElevator.elevate(itemView, R.dimen.card_elevation_high);
             mAdapter.onHolderSelected(itemView);
         }
     }
@@ -202,14 +202,15 @@ public class ReportListFragment extends Fragment {
         private void deleteReport(int position) {
             mRecentlyDeletedReport = ReportRepo.getInstance(getActivity()).deleteReport(position);
             mRecentlyDeletedReportPosition = position;
+            mCallbacks.onReportDeleted(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
             showUndoSnackbar();
         }
 
         private void showUndoSnackbar() {
-            View view = getActivity().findViewById(R.id.constraint_layout);
-            Snackbar snackbar = Snackbar.make(view, "Time Deleted", Snackbar.LENGTH_LONG);
+            View view = getActivity().findViewById(R.id.fragment_container);
+            Snackbar snackbar = Snackbar.make(view, "Report Deleted", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> undoDelete());
             snackbar.show();
         }

@@ -36,12 +36,25 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
     }
 
     @Override
+    public void onReportDeleted(Report report) {
+        if (isMasterDetail()) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.detail_fragment_container);
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .remove(fragment)
+                        .commit();
+            }
+        }
+    }
+
+    @Override
     public boolean isMasterDetail() {
         return findViewById(R.id.detail_fragment_container) != null;
     }
 
     @Override
     public void onReportUpdated(Report report) {
+
         ReportListFragment listFragment = (ReportListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
         listFragment.updateUI();
