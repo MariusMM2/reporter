@@ -387,17 +387,24 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         return outputBuilder.toString();
     }
 
-    private class TimeHolder extends RecyclerView.ViewHolder {
+    private class TimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Time mTime;
+        private TextView mTimeTextView;
 
         TimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_time, parent, false));
-            itemView.setOnClickListener(v -> attachTime(v, mTime));
+            itemView.setOnClickListener(this);
+            mTimeTextView = itemView.findViewById(R.id.item_time_text);
         }
 
         void bind(Time time) {
             mTime = time;
-            ((TextView)itemView.findViewById(R.id.item_time_text)).setText(mTime.toString());
+            mTimeTextView.setText(mTime.toString());
+        }
+
+        @Override
+        public void onClick(View v) {
+            attachTime(v, mTime);
         }
     }
 
