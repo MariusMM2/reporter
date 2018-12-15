@@ -215,7 +215,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         });
         mDebugDummyButton .setOnClickListener(v13 -> {
             mReport.from(Report.dummy());
-//            reportChanged();
             updateUI();
         });
 
