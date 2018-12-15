@@ -104,7 +104,8 @@ public class ReportListFragment extends Fragment {
                 Report report = new Report();
                 mCallbacks.onReportSelected(report);
                 ReportRepo.getInstance(getActivity()).addReport(report);
-                updateUI();
+                mAdapter.mReports.add(report);
+                mAdapter.notifyItemInserted(mAdapter.mReports.indexOf(report));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
