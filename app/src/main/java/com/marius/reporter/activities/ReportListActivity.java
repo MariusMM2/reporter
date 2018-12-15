@@ -1,6 +1,7 @@
 package com.marius.reporter.activities;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
@@ -20,16 +21,23 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
 
     @Override
     public void onReportSelected(Report report) {
-        if (findViewById(R.id.detail_fragment_container) == null) {
-            Intent intent = ReportPagerActivity.newIntent(this, report.getId());
-            startActivity(intent);
-        } else {
-            Fragment newDetail = ReportFragment.newInstance(report.getId());
+        new Handler().postDelayed(() -> {
+            if (!isMasterDetail()) {
+                Intent intent = ReportPagerActivity.newIntent(this, report.getId());
+                startActivity(intent);
+            } else {
+                Fragment newDetail = ReportFragment.newInstance(report.getId());
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detail_fragment_container, newDetail)
-                    .commit();
-        }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detail_fragment_container, newDetail)
+                        .commit();
+            }
+        }, getResources().getInteger(R.integer.default_anim_time));
+    }
+
+    @Override
+    public boolean isMasterDetail() {
+        return findViewById(R.id.detail_fragment_container) != null;
     }
 
     @Override
@@ -38,6 +46,4 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
                 .findFragmentById(R.id.fragment_container);
         listFragment.updateUI();
     }
-
-
 }

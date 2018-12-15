@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
 import com.marius.reporter.ReportRepo;
+import com.marius.reporter.utils.anim.ViewElevator;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class ReportListFragment extends Fragment {
      */
     public interface Callbacks {
         void onReportSelected(Report report);
+
+        boolean isMasterDetail();
     }
 
     @Override
@@ -122,37 +125,42 @@ public class ReportListFragment extends Fragment {
     private class ReportHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Report mReport;
         private TextView mTitleTextView;
+        private ReportAdapter mAdapter;
 
-        public ReportHolder(LayoutInflater inflater, ViewGroup parent) {
+        private ReportHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_report, parent, false));
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.report_title);
         }
 
-        public void bind(Report report) {
+        private void bind(Report report, ReportAdapter adapter) {
             mReport = report;
+            mAdapter = adapter;
             mTitleTextView.setText(mReport.getFlyerName());
         }
 
         @Override
         public void onClick(View v) {
             mCallbacks.onReportSelected(mReport);
+//            ViewElevator.elevate(itemView, R.dimen.card_elevation_high);
+            mAdapter.onHolderSelected(itemView);
         }
     }
 
     private class ReportAdapter extends RecyclerView.Adapter<ReportHolder> {
         private List<Report> mReports;
+        private View mSelectedHolderView;
         private Report mRecentlyDeletedReport;
         private int mRecentlyDeletedReportPosition;
 
-        public ReportAdapter(List<Report> reports) {
+        ReportAdapter(List<Report> reports) {
             mReports = reports;
         }
 
         @Override
         public void onBindViewHolder(@NonNull ReportHolder holder, int position, @NonNull List<Object> payloads) {
             Report report = mReports.get(position);
-            holder.bind(report);
+            holder.bind(report, this);
         }
 
         @NonNull
@@ -172,11 +180,26 @@ public class ReportListFragment extends Fragment {
             return mReports.size();
         }
 
-        public void setReports(List<Report> reports) {
+        private void onHolderSelected(View selectedHolderView) {
+            if (mCallbacks.isMasterDetail()) {
+                if (mSelectedHolderView == null) {
+                    mSelectedHolderView = selectedHolderView;
+                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_high).start();
+                } else if (mSelectedHolderView != selectedHolderView) {
+                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_low).start();
+                    mSelectedHolderView = selectedHolderView;
+                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_high).start();
+                }
+            } else {
+                mSelectedHolderView = selectedHolderView;
+            }
+        }
+
+        private void setReports(List<Report> reports) {
             mReports = reports;
         }
 
-        void deleteReport(int position) {
+        private void deleteReport(int position) {
             mRecentlyDeletedReport = ReportRepo.getInstance(getActivity()).deleteReport(position);
             mRecentlyDeletedReportPosition = position;
 
