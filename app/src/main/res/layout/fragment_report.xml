@@ -190,6 +190,18 @@
     </android.support.v7.widget.CardView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/debug_dummy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:elevation="4dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="@+id/text_card"
+        app:layout_constraintStart_toStartOf="@+id/text_card"
+        app:srcCompat="@drawable/ic_debug" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/send_report_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -217,18 +229,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/time_editor_card"
         app:srcCompat="@drawable/ic_add" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/debug_dummy_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:clickable="true"
-        app:elevation="4dp"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/text_card"
-        app:layout_constraintStart_toStartOf="@+id/text_card"
-        app:srcCompat="@drawable/ic_debug" />
 
 </android.support.constraint.ConstraintLayout>
