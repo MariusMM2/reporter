@@ -59,7 +59,7 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
     public void attachTime(Report.Time time, CardView timeHolderCard) {
         if (mTimeHolderCard == timeHolderCard) return;
 
-        ViewElevator.elevate(timeHolderCard, R.dimen.time_elevation_high).start();
+        ViewElevator.elevate(timeHolderCard, R.dimen.card_elevation_high).start();
 
         mTimeHolderCard = timeHolderCard;
 
@@ -73,7 +73,7 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
 
     public void detachTime() {
         if (mTimeHolderCard != null) {
-            ViewElevator.elevate(mTimeHolderCard, R.dimen.time_elevation_low).start();
+            ViewElevator.elevate(mTimeHolderCard, R.dimen.card_elevation_low).start();
             mTimeHolderCard = null;
         }
 
