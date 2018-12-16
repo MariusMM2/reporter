@@ -1,9 +1,10 @@
-package com.marius.reporter;
+package com.marius.reporter.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.marius.reporter.Report;
 import com.marius.reporter.database.report.ReportBaseHelper;
 import com.marius.reporter.database.report.ReportCursorWrapper;
 import com.marius.reporter.database.report.ReportDbSchema.ReportTable;

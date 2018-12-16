@@ -24,8 +24,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.marius.reporter.*;
+import com.marius.reporter.R;
+import com.marius.reporter.Report;
 import com.marius.reporter.Report.Time;
+import com.marius.reporter.Settings;
+import com.marius.reporter.TimeEditor;
+import com.marius.reporter.database.FlyerNameRepo;
+import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.marius.reporter;
+package com.marius.reporter.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +13,6 @@ import java.util.List;
 
 public class FlyerNameRepo {
     private static FlyerNameRepo instance;
-
     public static FlyerNameRepo getInstance(Context context) {
         if (instance == null) {
             instance = new FlyerNameRepo(context);

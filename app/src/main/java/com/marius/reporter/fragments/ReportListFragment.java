@@ -13,7 +13,7 @@ import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
-import com.marius.reporter.ReportRepo;
+import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.utils.anim.ViewElevator;
 
 import java.io.Serializable;

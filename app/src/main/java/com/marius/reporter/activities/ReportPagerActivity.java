@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
-import com.marius.reporter.ReportRepo;
+import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.fragments.ReportFragment;
 
 import java.util.List;
