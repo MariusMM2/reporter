@@ -60,6 +60,11 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
     }
 
     @Override
+    protected Intent getCurrentState() {
+        return new Intent().putExtra(EXTRA_REPORT_ID, mReports.get(mViewPager.getCurrentItem()).getId());
+    }
+
+    @Override
     public void onReportUpdated(Report report) {
 
     }

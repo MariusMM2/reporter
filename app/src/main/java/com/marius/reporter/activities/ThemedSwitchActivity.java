@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,10 +43,8 @@ public class ThemedSwitchActivity extends AppCompatActivity {
 
             @Override
             public void onAnimEnd() {
-                Fragment frag = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                assert frag != null;
-                frag.onStop();
-                Intent intent = new Intent(frag.getActivity(), ThemedSwitchActivity.this.getClass());
+                Intent intent = new Intent(ThemedSwitchActivity.this, ThemedSwitchActivity.this.getClass());
+                intent.putExtras(getCurrentState());
 
                 startActivity(intent);
                 finish();
@@ -63,4 +60,7 @@ public class ThemedSwitchActivity extends AppCompatActivity {
         return true;
     }
 
+    protected Intent getCurrentState() {
+        return getIntent();
+    }
 }
