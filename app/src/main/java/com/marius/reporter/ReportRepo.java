@@ -81,14 +81,11 @@ public class ReportRepo {
                 new String[]{uuidString});
     }
 
-    public Report deleteReport(UUID id) {
-        Report report = getReport(id);
+    public void deleteReport(UUID id) {
         String uuidString = id.toString();
         mDatabase.delete(ReportTable.NAME,
                 ReportTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
-
-        return report;
     }
 
     private static ContentValues getContentValues(Report report) {

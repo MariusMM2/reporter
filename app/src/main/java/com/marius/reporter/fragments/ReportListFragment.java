@@ -144,13 +144,13 @@ public class ReportListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             mCallbacks.onReportSelected(mReport);
-            mAdapter.onHolderSelected(itemView);
+            mAdapter.onHolderSelected(this);
         }
     }
 
     private class ReportAdapter extends RecyclerView.Adapter<ReportHolder> {
         private List<Report> mReports;
-        private View mSelectedHolderView;
+        private ReportHolder mSelectedHolderView;
         private Report mRecentlyDeletedReport;
 
         ReportAdapter(List<Report> reports) {
@@ -180,15 +180,18 @@ public class ReportListFragment extends Fragment {
             return mReports.size();
         }
 
-        private void onHolderSelected(View selectedHolderView) {
+        private void onHolderSelected(ReportHolder selectedHolderView) {
+
             if (mCallbacks.isMasterDetail()) {
                 if (mSelectedHolderView == null) {
                     mSelectedHolderView = selectedHolderView;
-                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_high).start();
+                    ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_high).start();
                 } else if (mSelectedHolderView != selectedHolderView) {
-                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_low).start();
+                    ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_low).start();
                     mSelectedHolderView = selectedHolderView;
-                    ViewElevator.elevate(mSelectedHolderView, R.dimen.card_elevation_high).start();
+                    if (mSelectedHolderView != null) {
+                        ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_high).start();
+                    }
                 }
             } else {
                 mSelectedHolderView = selectedHolderView;
@@ -201,7 +204,10 @@ public class ReportListFragment extends Fragment {
 
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
-            mRecentlyDeletedReport = ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
+            if (mRecentlyDeletedReport.equals(mSelectedHolderView.mReport)) {
+                onHolderSelected(null);
+            }
+            ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
             mCallbacks.onReportDeleted(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
