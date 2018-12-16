@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import com.marius.reporter.Report.Time;
 import com.marius.reporter.fragments.ReportFragment;
 import com.marius.reporter.utils.anim.ViewElevator;
 import com.marius.reporter.utils.anim.ViewTranslator;
@@ -20,12 +21,14 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
     private NumberPicker[] mPickers;
     private View mContainer;
     private View mTimeHolderCard;
-    private Report.Time mTime;
+    private Time mTime;
     private static final Direction SLIDE_DIR = Direction.DOWN;
+    private boolean mShown;
 
     public TimeEditor() {
-        mTime = new Report.Time();
+        mTime = new Time();
         mPickers = new NumberPicker[3];
+        mShown = false;
     }
 
     public void init(View container) {
@@ -56,7 +59,7 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
         for (NumberPicker n : mPickers) n.setEnabled(false);
     }
 
-    public void attachTime(Report.Time time, CardView timeHolderCard) {
+    public void attachTime(Time time, CardView timeHolderCard) {
         if (mTimeHolderCard == timeHolderCard) return;
 
         ViewElevator.elevate(timeHolderCard, R.dimen.card_elevation_high).start();
@@ -83,10 +86,12 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
     }
 
     public void show() {
+        mShown = true;
         ViewTranslator.slideInAndShow(mContainer, SLIDE_DIR);
     }
 
     public void hide() {
+        mShown = false;
         ViewTranslator.slideOutAndHide(mContainer, SLIDE_DIR);
     }
 
@@ -103,7 +108,15 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
             ((TextView) mTimeHolderCard.findViewById(R.id.item_time_text)).setText(mTime.toString());
     }
 
-    public View getCurrentTime() {
+    public boolean isShown() {
+        return mShown;
+    }
+
+    public Time getCurrentTime() {
+        return mTime;
+    }
+
+    public View getCurrentTimeView() {
         return mTimeHolderCard;
     }
 

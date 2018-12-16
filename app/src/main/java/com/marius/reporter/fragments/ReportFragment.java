@@ -367,7 +367,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     }
 
     private void attachTime(View v, Time time) {
-        if (v == mTimeEditor.getCurrentTime()) return;
+        if (v == mTimeEditor.getCurrentTimeView()) return;
         detachTime();
         mTimeEditor.attachTime(time, (CardView) v);
         Log.d(TAG, "listener attached to " + time.toString());
@@ -405,6 +405,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         void bind(Time time) {
             mTime = time;
             mTimeTextView.setText(mTime.toString());
+            if (mTimeEditor.isShown()) {
+                if (!mTimeEditor.getCurrentTime().equals(mTime)) {
+                    onClick(itemView);
+                }
+            }
         }
 
         @Override
@@ -450,6 +455,10 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         void deleteTime(int position) {
             mRecentlyDeletedTime = mReport.remove(position);
             mRecentlyDeletedTimePosition = position;
+            if (mRecentlyDeletedTime.equals(mTimeEditor.getCurrentTime())) {
+                mTimeEditor.detachTime();
+                mTimeEditor.hide();
+            }
 
             notifyItemRemoved(position);
             showUndoSnackbar();

@@ -180,9 +180,26 @@ public class Report implements Serializable {
     }
 
     public static class Time implements Serializable {
+        private UUID mId;
         private byte hours;
         private byte minutes;
         private byte seconds;
+
+        public Time() {
+            this(UUID.randomUUID());
+        }
+
+        public Time(UUID id) {
+            this.mId = id;
+        }
+
+        public UUID getId() {
+            return mId;
+        }
+
+        public void setId(UUID id) {
+            mId = id;
+        }
 
         public byte getHours() {
             return hours;
@@ -211,6 +228,19 @@ public class Report implements Serializable {
         @Override
         public String toString() {
             return String.format(Locale.UK,"%02d:%02d:%02d", hours, minutes, seconds);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Time time = (Time) o;
+            return Objects.equals(mId, time.mId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(mId);
         }
     }
 
