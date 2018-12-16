@@ -24,16 +24,20 @@ public class ReportRepo {
 
     private Context mContext;
     private SQLiteDatabase mDatabase;
+    private TimeRepo mTimeRepo;
 
     public ReportRepo(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new ReportBaseHelper(mContext).getWritableDatabase();
+        mTimeRepo = TimeRepo.getInstance(context);
     }
 
     public void addReport(Report report) {
         ContentValues values = getContentValues(report);
 
         mDatabase.insert(ReportTable.NAME, null, values);
+
+        mTimeRepo.addTimes(report);
     }
 
     public List<Report> getReports() {
@@ -51,6 +55,10 @@ public class ReportRepo {
             cursor.close();
         }
 
+        for (Report report : reports) {
+            mTimeRepo.getTimes(report);
+        }
+
         return reports;
     }
 
@@ -66,14 +74,17 @@ public class ReportRepo {
             }
 
             cursor.moveToFirst();
-            return cursor.getReport();
+            Report report = cursor.getReport();
+            mTimeRepo.getTimes(report);
+            return report;
         } finally {
             cursor.close();
         }
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     public void updateReport(Report report) {
+        mTimeRepo.addTimes(report);
+
         String uuidString = report.getId().toString();
         ContentValues values = getContentValues(report);
 
@@ -83,6 +94,8 @@ public class ReportRepo {
     }
 
     public void deleteReport(UUID id) {
+        mTimeRepo.deleteTimes(getReport(id));
+
         String uuidString = id.toString();
         mDatabase.delete(ReportTable.NAME,
                 ReportTable.Cols.UUID + " = ?",

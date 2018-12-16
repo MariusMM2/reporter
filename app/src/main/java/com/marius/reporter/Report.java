@@ -175,6 +175,10 @@ public class Report implements Serializable {
         }
     }
 
+    public Time[] getTimes() {
+        return mTimes.toArray(new Time[]{});
+    }
+
     public static class Time implements Serializable {
         private byte hours;
         private byte minutes;
