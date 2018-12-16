@@ -13,7 +13,7 @@ import java.util.UUID;
 import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID;
 
 public class ReportListActivity extends SingleFragmentActivity implements ReportListFragment.Callbacks, ReportFragment.Callbacks {
-    //    @SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     private static final String TAG = ReportListActivity.class.getSimpleName();
 
     private UUID mLastSelectedReportId;

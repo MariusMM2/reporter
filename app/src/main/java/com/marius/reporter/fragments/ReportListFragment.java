@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
@@ -17,6 +18,7 @@ import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.utils.anim.ViewElevator;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID;
@@ -28,9 +30,11 @@ import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID
  * to handle interaction events.
  */
 public class ReportListFragment extends Fragment {
+    @SuppressWarnings("unused")
+    private static final String TAG = ReportListFragment.class.getSimpleName();
 
     private RecyclerView mReportRecyclerView;
-    private ReportAdapter mAdapter;
+    private ReportAdapter mReportAdapter;
     private Callbacks mCallbacks;
 
     /**
@@ -76,10 +80,20 @@ public class ReportListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mReportRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mReportAdapter = new ReportAdapter();
+        mReportRecyclerView.setAdapter(mReportAdapter);
+        mReportAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
+
         updateUI();
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mReportAdapter));
         itemTouchHelper.attachToRecyclerView(mReportRecyclerView);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+//        mReportAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
     }
 
     @Override
@@ -100,15 +114,19 @@ public class ReportListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_report_list, menu);
     }
 
+    @SuppressWarnings("SwitchStatementWithTooFewBranches")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_report:
                 Report report = new Report();
-                mCallbacks.onReportSelected(report);
+                Log.d(TAG, "created report with id '" + report.getId() + "'");
+//                mCallbacks.onReportSelected(report);
                 ReportRepo.getInstance(getActivity()).addReport(report);
-                mAdapter.mReports.add(report);
-                mAdapter.notifyItemInserted(mAdapter.mReports.indexOf(report));
+                mReportAdapter.add(report);
+                mReportAdapter.mOnItemCreated = true;
+                mReportAdapter.onHolderRemoved();
+                mReportAdapter.notifyItemInserted(mReportAdapter.indexOf(report));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -116,19 +134,12 @@ public class ReportListFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Report> reports = ReportRepo.getInstance(getActivity()).getReports();
-
-        if (mAdapter == null) {
-            mAdapter = new ReportAdapter(reports);
-            mReportRecyclerView.setAdapter(mAdapter);
-        } else {
-            mAdapter.setReports(reports);
-            mAdapter.notifyDataSetChanged();
-        }
+        mReportAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
+        mReportAdapter.notifyDataSetChanged();
     }
 
     private class ReportHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Report mReport;
+        private ReportAdapter.ListReportItem mItem;
         private TextView mTitleTextView;
         private ReportAdapter mAdapter;
 
@@ -138,37 +149,63 @@ public class ReportListFragment extends Fragment {
             mTitleTextView = itemView.findViewById(R.id.report_title);
         }
 
-        private void bind(Report report, ReportAdapter adapter) {
-            mReport = report;
+        private void bind(ReportAdapter.ListReportItem report, ReportAdapter adapter) {
+            mItem = report;
             mAdapter = adapter;
-            mTitleTextView.setText(mReport.getFlyerName());
-            if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
+            if (mItem.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
                 getActivity().getIntent().putExtra(EXTRA_REPORT_ID, (Serializable) null);
                 onClick(null);
             }
+            if (mAdapter.mOnItemCreated) {
+                if (mAdapter.mReports.indexOf(mItem) == mAdapter.mReports.size() - 1) {
+                    mAdapter.mOnItemCreated = false;
+                    onClick(null);
+                }
+            }
+            updateUI();
+        }
+
+        private void updateUI() {
+            mTitleTextView.setText(mItem.getFlyerName());
+            ViewElevator.elevate(itemView, mItem.mSelected ? R.dimen.card_elevation_high : R.dimen.card_elevation_low).start();
         }
 
         @Override
         public void onClick(View v) {
-            mCallbacks.onReportSelected(mReport);
-            mAdapter.onHolderSelected(this);
+            if (mCallbacks.isMasterDetail()) {
+                for (ReportAdapter.ListReportItem listReportItem :
+                        mReportAdapter.mReports) {
+                    listReportItem.deselect();
+                }
+                mItem.select();
+                updateUI();
+
+                if (!this.mItem.equals(mAdapter.mSelectedReport)) {
+                    mCallbacks.onReportSelected(mItem);
+                    mAdapter.onHolderSelected(this);
+                }
+            } else {
+                mCallbacks.onReportSelected(mItem);
+                mAdapter.onHolderSelected(this);
+            }
         }
     }
 
     private class ReportAdapter extends RecyclerView.Adapter<ReportHolder> {
-        private List<Report> mReports;
+        private List<ListReportItem> mReports;
         private ReportHolder mSelectedHolderView;
-        private Report mSelectedReport;
-        private Report mRecentlyDeletedReport;
+        private ListReportItem mSelectedReport;
+        private ListReportItem mRecentlyDeletedReport;
+        private boolean mOnItemCreated;
 
-        ReportAdapter(List<Report> reports) {
-            mReports = reports;
+        ReportAdapter() {
+            mReports = new ArrayList<>();
+            mOnItemCreated = false;
         }
 
         @Override
         public void onBindViewHolder(@NonNull ReportHolder holder, int position, @NonNull List<Object> payloads) {
-            Report report = mReports.get(position);
-            holder.bind(report, this);
+            holder.bind(mReports.get(position), this);
         }
 
         @NonNull
@@ -191,33 +228,52 @@ public class ReportListFragment extends Fragment {
         private void onHolderSelected(ReportHolder selectedHolderView) {
 
             if (mCallbacks.isMasterDetail()) {
-                if (mSelectedHolderView == null) {
-                    mSelectedHolderView = selectedHolderView;
-                    ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_high).start();
-                } else if (mSelectedHolderView != selectedHolderView) {
-                    ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_low).start();
-                    mSelectedHolderView = selectedHolderView;
-                    if (mSelectedHolderView != null) {
-                        ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_high).start();
+                if (selectedHolderView == null) {
+                    onHolderRemoved();
+                } else {
+                    if (mSelectedHolderView == null) {
+                        mSelectedHolderView = selectedHolderView;
+                        mSelectedHolderView.mItem.select();
+                    } else if (mSelectedHolderView != selectedHolderView) {
+                        onHolderRemoved();
+                        mSelectedHolderView = selectedHolderView;
+                        mSelectedHolderView.mItem.select();
+                        mSelectedHolderView.updateUI();
                     }
                 }
             } else {
                 mSelectedHolderView = selectedHolderView;
             }
-            mSelectedReport = (mSelectedHolderView != null) ? mSelectedHolderView.mReport : null;
+            mSelectedReport = (mSelectedHolderView != null) ? mSelectedHolderView.mItem : null;
+        }
+
+        private void onHolderRemoved() {
+            if (mSelectedHolderView != null) {
+                mSelectedHolderView.mItem.deselect();
+                mSelectedHolderView.updateUI();
+//                ViewElevator.elevate(mSelectedHolderView.itemView, R.dimen.card_elevation_low).start();
+                mSelectedHolderView = null;
+            }
         }
 
         private void setReports(List<Report> reports) {
-            mReports = reports;
+            mReports.clear();
+            for (Report report : reports) {
+                ListReportItem listReportItem = new ListReportItem(report);
+                if (listReportItem.equals(mSelectedReport)) {
+                    listReportItem.select();
+                }
+                mReports.add(listReportItem);
+            }
         }
 
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
             if (mRecentlyDeletedReport.equals(mSelectedReport)) {
                 onHolderSelected(null);
+                mCallbacks.onReportDeleted(mRecentlyDeletedReport);
             }
             ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
-            mCallbacks.onReportDeleted(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
             showUndoSnackbar();
@@ -234,6 +290,36 @@ public class ReportListFragment extends Fragment {
             ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReport);
             mReports.add(mRecentlyDeletedReport);
             notifyItemInserted(mReports.indexOf(mRecentlyDeletedReport));
+        }
+
+        public void add(Report report) {
+            mReports.add(new ReportAdapter.ListReportItem(report));
+        }
+
+        public int indexOf(Report report) {
+            for (int i = 0; i < mReports.size(); i++) {
+                if (mReports.get(i).getId().equals(report.getId())) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private class ListReportItem extends Report {
+            private boolean mSelected;
+
+            public ListReportItem(Report report) {
+                super(report);
+                this.mSelected = false;
+            }
+
+            private void select() {
+                mSelected = true;
+            }
+
+            private void deselect() {
+                mSelected = false;
+            }
         }
     }
 

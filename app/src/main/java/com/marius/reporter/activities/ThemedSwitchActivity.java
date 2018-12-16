@@ -12,6 +12,7 @@ import com.mahfa.dnswitch.DayNightSwitch;
 import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Settings;
+import com.marius.reporter.database.ReportRepo;
 
 //A template Activity with a day/night switch in the menu
 @SuppressLint("Registered")
@@ -27,6 +28,12 @@ public class ThemedSwitchActivity extends AppCompatActivity {
         setTheme(Settings.getInstance(this).darkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
         mPendingThemeRefresh = getIntent().getBooleanExtra(EXTRA_ON_THEME_REFRESH, false);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ReportRepo.getInstance(this).updateDb();
     }
 
     @Override

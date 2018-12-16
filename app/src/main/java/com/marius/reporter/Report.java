@@ -6,13 +6,13 @@ import com.thedeanda.lorem.LoremIpsum;
 import java.io.Serializable;
 import java.util.*;
 
-public class Report implements Serializable {
-    private transient Callbacks mCallBacks;
+public class Report {
+    private Callbacks mCallBacks;
     private UUID mId;
     private String mFlyerName;
     private short mRemainingFlyers;
     private boolean mWithRemainingFlyers;
-    private transient String mGPSName;
+    private String mGPSName;
     private List<Time> mTimes;
 
     public Report() {
@@ -26,6 +26,16 @@ public class Report implements Serializable {
         mWithRemainingFlyers = true;
         mGPSName = "";
         mTimes = new ArrayList<>();
+    }
+
+    public Report(Report report) {
+        this.mCallBacks = report.mCallBacks;
+        this.mId = report.mId;
+        this.mFlyerName = report.mFlyerName;
+        this.mRemainingFlyers = report.mRemainingFlyers;
+        this.mWithRemainingFlyers = report.mWithRemainingFlyers;
+        this.mGPSName = report.mGPSName;
+        this.mTimes = report.mTimes;
     }
 
     public void setCallBacks(Callbacks callBacks) {
