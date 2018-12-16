@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ReportPagerActivity extends ThemedSwitchActivity implements ReportFragment.Callbacks {
-    private static final String EXTRA_REPORT_ID = "com.marius.reporter.activities.report_id";
+    public static final String EXTRA_REPORT_ID = "com.marius.reporter.activities.report_id";
 
     private ViewPager mViewPager;
     private List<Report> mReports;
@@ -30,6 +30,8 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        themeTransitionDone();
 
         setContentView(R.layout.activity_report_pager);
 

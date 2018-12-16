@@ -8,7 +8,15 @@ import com.marius.reporter.Report;
 import com.marius.reporter.fragments.ReportFragment;
 import com.marius.reporter.fragments.ReportListFragment;
 
+import java.util.UUID;
+
+import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID;
+
 public class ReportListActivity extends SingleFragmentActivity implements ReportListFragment.Callbacks, ReportFragment.Callbacks {
+    //    @SuppressWarnings("unused")
+    private static final String TAG = ReportListActivity.class.getSimpleName();
+
+    private UUID mLastSelectedReportId;
     @Override
     protected Fragment createFragment() {
         return new ReportListFragment();
@@ -20,7 +28,13 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
     }
 
     @Override
+    protected Intent getCurrentState() {
+        return super.getCurrentState().putExtra(EXTRA_REPORT_ID, mLastSelectedReportId);
+    }
+
+    @Override
     public void onReportSelected(Report report) {
+        mLastSelectedReportId = report.getId();
         new Handler().postDelayed(() -> {
             if (!isMasterDetail()) {
                 Intent intent = ReportPagerActivity.newIntent(this, report.getId());
@@ -32,7 +46,8 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
                         .replace(R.id.detail_fragment_container, newDetail)
                         .commit();
             }
-        }, getResources().getInteger(R.integer.default_anim_time));
+        }, getAnimDuration(R.integer.default_anim_time));
+        themeTransitionDone();
     }
 
     @Override

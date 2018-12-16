@@ -3,6 +3,7 @@ package com.marius.reporter.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,10 +16,16 @@ import com.marius.reporter.Settings;
 //A template Activity with a day/night switch in the menu
 @SuppressLint("Registered")
 public class ThemedSwitchActivity extends AppCompatActivity {
+    @SuppressWarnings("unused")
+    private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
+
+    private static final String EXTRA_ON_THEME_REFRESH = "com.marius.reporter.activities.on_theme_refresh";
+    private boolean mPendingThemeRefresh;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(Settings.getInstance(this).darkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
+        mPendingThemeRefresh = getIntent().getBooleanExtra(EXTRA_ON_THEME_REFRESH, false);
         super.onCreate(savedInstanceState);
     }
 
@@ -44,7 +51,8 @@ public class ThemedSwitchActivity extends AppCompatActivity {
             @Override
             public void onAnimEnd() {
                 Intent intent = new Intent(ThemedSwitchActivity.this, ThemedSwitchActivity.this.getClass());
-                intent.putExtras(getCurrentState());
+                intent.putExtras(getCurrentState())
+                        .putExtra(EXTRA_ON_THEME_REFRESH, true);
 
                 startActivity(intent);
                 finish();
@@ -62,5 +70,13 @@ public class ThemedSwitchActivity extends AppCompatActivity {
 
     protected Intent getCurrentState() {
         return getIntent();
+    }
+
+    long getAnimDuration(@SuppressWarnings("SameParameterValue") @IntegerRes int unfilteredDuration) {
+        return mPendingThemeRefresh ? 0 : getResources().getInteger(unfilteredDuration);
+    }
+
+    void themeTransitionDone() {
+        mPendingThemeRefresh = false;
     }
 }

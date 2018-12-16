@@ -16,7 +16,10 @@ import com.marius.reporter.Report;
 import com.marius.reporter.ReportRepo;
 import com.marius.reporter.utils.anim.ViewElevator;
 
+import java.io.Serializable;
 import java.util.List;
+
+import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -139,6 +142,10 @@ public class ReportListFragment extends Fragment {
             mReport = report;
             mAdapter = adapter;
             mTitleTextView.setText(mReport.getFlyerName());
+            if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
+                getActivity().getIntent().putExtra(EXTRA_REPORT_ID, (Serializable) null);
+                onClick(null);
+            }
         }
 
         @Override
