@@ -1,4 +1,2 @@
 TODO add fade out animations on item swipes for Times
-TODO saving and loading reports from db
-TODO revamp the time editor -dismiss when pressing on empty space - 80% progress
 TODO "remaining flyers" field could do with a number spinner
