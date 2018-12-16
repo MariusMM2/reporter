@@ -151,6 +151,7 @@ public class ReportListFragment extends Fragment {
     private class ReportAdapter extends RecyclerView.Adapter<ReportHolder> {
         private List<Report> mReports;
         private ReportHolder mSelectedHolderView;
+        private Report mSelectedReport;
         private Report mRecentlyDeletedReport;
 
         ReportAdapter(List<Report> reports) {
@@ -196,6 +197,7 @@ public class ReportListFragment extends Fragment {
             } else {
                 mSelectedHolderView = selectedHolderView;
             }
+            mSelectedReport = (mSelectedHolderView != null) ? mSelectedHolderView.mReport : null;
         }
 
         private void setReports(List<Report> reports) {
@@ -204,7 +206,7 @@ public class ReportListFragment extends Fragment {
 
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
-            if (mRecentlyDeletedReport.equals(mSelectedHolderView.mReport)) {
+            if (mRecentlyDeletedReport.equals(mSelectedReport)) {
                 onHolderSelected(null);
             }
             ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
