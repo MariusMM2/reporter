@@ -165,7 +165,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             @Override
             public void afterTextChanged(Editable s) {
                 mReport.setFlyerName(s.toString());
-//                updateReport();
             }
         });
         mQuantityLeftLabel.setOnCheckedChangeListener((buttonView, isChecked) -> {
