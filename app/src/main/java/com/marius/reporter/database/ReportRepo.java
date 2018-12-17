@@ -25,7 +25,6 @@ public class ReportRepo {
     private Context mContext;
     private SQLiteDatabase mDatabase;
     private TimeRepo mTimeRepo;
-    private List<Report> mReportList;
 
     public ReportRepo(Context context) {
         mContext = context.getApplicationContext();
@@ -126,9 +125,5 @@ public class ReportRepo {
         );
 
         return new ReportCursorWrapper(cursor);
-    }
-
-    public void updateDb() {
-
     }
 }

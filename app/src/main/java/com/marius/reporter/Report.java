@@ -3,7 +3,6 @@ package com.marius.reporter;
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;
 
-import java.io.Serializable;
 import java.util.*;
 
 public class Report {
@@ -26,16 +25,6 @@ public class Report {
         mWithRemainingFlyers = true;
         mGPSName = "";
         mTimes = new ArrayList<>();
-    }
-
-    public Report(Report report) {
-        this.mCallBacks = report.mCallBacks;
-        this.mId = report.mId;
-        this.mFlyerName = report.mFlyerName;
-        this.mRemainingFlyers = report.mRemainingFlyers;
-        this.mWithRemainingFlyers = report.mWithRemainingFlyers;
-        this.mGPSName = report.mGPSName;
-        this.mTimes = report.mTimes;
     }
 
     public void setCallBacks(Callbacks callBacks) {
@@ -177,7 +166,7 @@ public class Report {
         return mTimes.toArray(new Time[]{});
     }
 
-    public static class Time implements Serializable {
+    public static class Time {
         private UUID mId;
         private byte hours;
         private byte minutes;
