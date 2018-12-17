@@ -38,7 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-@SuppressWarnings({"FieldCanBeLocal", "ConstantConditions"})
+@SuppressWarnings("ConstantConditions")
 public class ReportFragment extends Fragment implements Report.Callbacks {
     @SuppressWarnings("unused")
     private static final String TAG = ReportFragment.class.getSimpleName();
@@ -294,6 +294,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     @Override
     public void onPause() {
         super.onPause();
+
         updateReport();
     }
 

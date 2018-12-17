@@ -45,9 +45,7 @@ public class ReportListFragment extends Fragment {
      */
     public interface Callbacks {
         void onReportSelected(Report report);
-
         void onReportDeleted(Report report);
-        boolean isMasterDetail();
     }
 
     @Override
@@ -69,7 +67,7 @@ public class ReportListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report_list, container, false);
 
         mReportRecyclerView = v.findViewById(R.id.report_recycler_view);
@@ -117,6 +115,7 @@ public class ReportListFragment extends Fragment {
     @SuppressWarnings("SwitchStatementWithTooFewBranches")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //noinspection SwitchStatementWithTooFewBranches
         switch (item.getItemId()) {
             case R.id.new_report:
                 Report report = new Report();
@@ -141,7 +140,6 @@ public class ReportListFragment extends Fragment {
     private class ReportHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ReportAdapter.ListReportItem mItem;
         private TextView mTitleTextView;
-        private ReportAdapter mAdapter;
 
         private ReportHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_report, parent, false));
@@ -149,25 +147,14 @@ public class ReportListFragment extends Fragment {
             mTitleTextView = itemView.findViewById(R.id.report_title);
         }
 
-        private void bind(ReportAdapter.ListReportItem report, ReportAdapter adapter) {
-            mItem = report;
-            mAdapter = adapter;
-            if (mItem.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
+        private void bind(Report report) {
+            mReport = report;
+            mTitleTextView.setText(mReport.getFlyerName());
+
+            if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
                 getActivity().getIntent().putExtra(EXTRA_REPORT_ID, (Serializable) null);
                 onClick(null);
             }
-            if (mAdapter.mOnItemCreated) {
-                if (mAdapter.mReports.indexOf(mItem) == mAdapter.mReports.size() - 1) {
-                    mAdapter.mOnItemCreated = false;
-                    onClick(null);
-                }
-            }
-            updateUI();
-        }
-
-        private void updateUI() {
-            mTitleTextView.setText(mItem.getFlyerName());
-            ViewElevator.elevate(itemView, mItem.mSelected ? R.dimen.card_elevation_high : R.dimen.card_elevation_low).start();
         }
 
         @Override
@@ -216,7 +203,7 @@ public class ReportListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ReportHolder reportHolder, int i) {
+        public void onBindViewHolder(@NonNull ReportHolder reportHolder, int position) {
 
         }
 
