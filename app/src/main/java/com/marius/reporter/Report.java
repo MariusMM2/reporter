@@ -118,19 +118,7 @@ public class Report {
         this.mWithRemainingFlyers = newReport.mWithRemainingFlyers;
         this.mRemainingFlyers = newReport.mRemainingFlyers;
         this.mTimes = newReport.mTimes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Report report = (Report) o;
-        return mId.equals(report.mId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(mId);
+        notifyChange();
     }
 
     @SuppressWarnings("SpellCheckingInspection")

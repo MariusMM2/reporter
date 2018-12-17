@@ -295,7 +295,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     public void onPause() {
         super.onPause();
 
-        updateReport();
+        reportChanged();
     }
 
     @Override
@@ -308,11 +308,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
-    }
-
-    private void updateReport() {
-        ReportRepo.getInstance(getActivity()).updateReport(mReport);
-        mCallbacks.onReportUpdated(mReport);
     }
 
     private void updateUI() {
