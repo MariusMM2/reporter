@@ -33,20 +33,21 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
 
     @Override
     public void onReportSelected(Report report) {
-        if (!report.getId().equals(mLastSelectedReportId)) {
-            mLastSelectedReportId = report.getId();
-
             if (findViewById(R.id.detail_fragment_container) == null) {
+                mLastSelectedReportId = null;
                 Intent intent = ReportPagerActivity.newIntent(this, report.getId());
                 startActivity(intent);
             } else {
-                Fragment newDetail = ReportFragment.newInstance(report.getId());
+                if (!report.getId().equals(mLastSelectedReportId)) {
+                    mLastSelectedReportId = report.getId();
+                    Fragment newDetail = ReportFragment.newInstance(report.getId());
 
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.detail_fragment_container, newDetail)
-                        .commit();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.detail_fragment_container, newDetail)
+                            .commit();
+                }
             }
-        }
+
         themeTransitionDone();
     }
 
