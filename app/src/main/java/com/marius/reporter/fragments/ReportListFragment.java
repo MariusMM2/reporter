@@ -13,6 +13,7 @@ import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
 import com.marius.reporter.Report;
+import com.marius.reporter.Settings;
 import com.marius.reporter.database.ReportRepo;
 
 import java.io.Serializable;
@@ -29,6 +30,8 @@ import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID
 public class ReportListFragment extends Fragment {
     @SuppressWarnings("unused")
     private static final String TAG = ReportListFragment.class.getSimpleName();
+
+    private Settings mSettings;
 
     private RecyclerView mReportRecyclerView;
     private ReportAdapter mAdapter;
@@ -60,6 +63,8 @@ public class ReportListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSettings = Settings.getInstance(getActivity());
+
         setHasOptionsMenu(true);
     }
 
@@ -106,6 +111,7 @@ public class ReportListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.new_report:
                 Report report = new Report();
+                report.setGPSName(mSettings.gpsName);
                 mCallbacks.onReportSelected(report);
                 ReportRepo.getInstance(getActivity()).addReport(report);
                 mAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
