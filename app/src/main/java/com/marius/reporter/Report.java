@@ -80,11 +80,22 @@ public class Report {
     }
 
     public String getTimesString() {
+//        StringBuilder timesBuilder = new StringBuilder();
+//        if (mTimes.size() > 0) {
+//            timesBuilder.append(mTimes.get(0));
+//            if (mTimes.size() > 1) {
+//                for (int i = 1; i < mTimes.size(); i++) {
+//                    timesBuilder.append(", ");
+//                    timesBuilder.append(mTimes.get(i));
+//                }
+//            }
+//        }
+//        return timesBuilder.toString();
         StringBuilder timesBuilder = new StringBuilder();
         if (mTimes.size() > 0) {
-            timesBuilder.append(mTimes.get(0));
+            timesBuilder.append(mTimes.get(mTimes.size() - 1));
             if (mTimes.size() > 1) {
-                for (int i = 1; i < mTimes.size(); i++) {
+                for (int i = mTimes.size() - 2; i >= 0; i--) {
                     timesBuilder.append(", ");
                     timesBuilder.append(mTimes.get(i));
                 }
