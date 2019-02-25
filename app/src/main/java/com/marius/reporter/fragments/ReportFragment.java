@@ -72,16 +72,16 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     private ReportCheckTimer mSendFABTimer;
 
-    public interface Callbacks {
-        void onReportUpdated(Report report);
-    }
-
     public static ReportFragment newInstance(UUID reportId) {
         Bundle args = new Bundle();
         args.putSerializable(Arg.REPORT_ID, reportId);
         ReportFragment fragment = new ReportFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public interface Callbacks {
+        void onReportUpdated(Report report);
     }
 
     @Override
