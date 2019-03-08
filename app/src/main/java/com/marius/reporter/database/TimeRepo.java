@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.marius.reporter.Report;
-import com.marius.reporter.Report.Time;
+import com.marius.reporter.Time;
 import com.marius.reporter.database.report.time.TimeBaseHelper;
 import com.marius.reporter.database.report.time.TimeCursorWrapper;
 import com.marius.reporter.database.report.time.TimeDbSchema;

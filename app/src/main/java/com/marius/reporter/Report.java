@@ -79,6 +79,21 @@ public class Report {
         return flyerName && remainingFlyer && gpsName && times;
     }
 
+    public String getTotalTime() {
+
+        Time total;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            total = Arrays.stream(getTimes()).reduce(new Time(), Time::add);
+        } else {
+            total = new Time();
+            for (Time time : getTimes()) {
+                total.add(time);
+            }
+        }
+
+        return total.toString();
+    }
+
     public String getTimesString() {
 //        StringBuilder timesBuilder = new StringBuilder();
 //        if (mTimes.size() > 0) {
@@ -175,71 +190,6 @@ public class Report {
 
     public Time[] getTimes() {
         return mTimes.toArray(new Time[]{});
-    }
-
-    public static class Time {
-        private UUID mId;
-        private byte hours;
-        private byte minutes;
-        private byte seconds;
-
-        public Time() {
-            this(UUID.randomUUID());
-        }
-
-        public Time(UUID id) {
-            this.mId = id;
-        }
-
-        public UUID getId() {
-            return mId;
-        }
-
-        public void setId(UUID id) {
-            mId = id;
-        }
-
-        public byte getHours() {
-            return hours;
-        }
-
-        public void setHours(int hours) {
-            this.hours = (byte) Math.min(Math.max(hours, 0), 23);
-        }
-
-        public byte getMinutes() {
-            return minutes;
-        }
-
-        public void setMinutes(int minutes) {
-            this.minutes = (byte) Math.min(Math.max(minutes, 0), 59);
-        }
-
-        public byte getSeconds() {
-            return seconds;
-        }
-
-        public void setSeconds(int seconds) {
-            this.seconds = (byte) Math.min(Math.max(seconds, 0), 59);
-        }
-
-        @Override
-        public String toString() {
-            return String.format(Locale.UK,"%02d:%02d:%02d", hours, minutes, seconds);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Time time = (Time) o;
-            return Objects.equals(mId, time.mId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(mId);
-        }
     }
 
     public interface Callbacks {

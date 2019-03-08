@@ -132,16 +132,19 @@ public class ReportListFragment extends Fragment {
     private class ReportHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Report mReport;
         private TextView mTitleTextView;
+        private TextView mTimeTextView;
 
         private ReportHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_report, parent, false));
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.report_title);
+            mTimeTextView = itemView.findViewById(R.id.time_text);
         }
 
         private void bind(Report report) {
             mReport = report;
             mTitleTextView.setText(mReport.getFlyerName());
+            mTimeTextView.setText(mReport.getTotalTime());
 
             if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
                 getActivity().getIntent().putExtra(EXTRA_REPORT_ID, (Serializable) null);

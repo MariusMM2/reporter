@@ -24,11 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.marius.reporter.R;
-import com.marius.reporter.Report;
-import com.marius.reporter.Report.Time;
-import com.marius.reporter.Settings;
-import com.marius.reporter.TimeEditor;
+import com.marius.reporter.*;
 import com.marius.reporter.database.FlyerNameRepo;
 import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.utils.anim.ViewTranslator;
@@ -126,15 +122,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
-        mFlyerNameField    = v.findViewById(R.id.flyer_name);
+        mFlyerNameField = v.findViewById(R.id.flyer_name);
         mQuantityLeftLabel = v.findViewById(R.id.remaining_flyers_label);
         mQuantityLeftField = v.findViewById(R.id.remaining_flyers_field);
-        mGpsNameField      = v.findViewById(R.id.gps_name);
+        mGpsNameField = v.findViewById(R.id.gps_name);
         mTimeListView = v.findViewById(R.id.times_recycler_view);
-        mTimeEditorView    = v.findViewById(R.id.time_editor_card);
-        mAddTimeButton     = v.findViewById(R.id.add_time_button);
-        mSendReportButton  = v.findViewById(R.id.send_report_button);
-        mDebugDummyButton  = v.findViewById(R.id.debug_dummy_button);
+        mTimeEditorView = v.findViewById(R.id.time_editor_card);
+        mAddTimeButton = v.findViewById(R.id.add_time_button);
+        mSendReportButton = v.findViewById(R.id.send_report_button);
+        mDebugDummyButton = v.findViewById(R.id.debug_dummy_button);
         mTimeEditor.init(mTimeEditorView);
 
         return v;
@@ -153,7 +149,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             }
         });
 
-        mFlyerNameField   .addTextChangedListener(new TextWatcher() {
+        mFlyerNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -189,7 +185,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             public void afterTextChanged(Editable s) {
             }
         });
-        mGpsNameField     .addTextChangedListener(new TextWatcher() {
+        mGpsNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -204,11 +200,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
                 mSettings.gpsName = s.toString();
             }
         });
-        mAddTimeButton    .setOnClickListener(v1 -> {
+        mAddTimeButton.setOnClickListener(v1 -> {
             mReport.add(new Time());
             mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
         });
-        mSendReportButton .setOnClickListener(v12 -> {
+        mSendReportButton.setOnClickListener(v12 -> {
             FlyerNameRepo.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
 
             Intent i = new Intent(Intent.ACTION_SEND);
@@ -218,7 +214,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             final Intent i2 = Intent.createChooser(i, getString(R.string.send_report));
             ViewTranslator.moveOffscreen(mSendReportButton, ViewTranslator.Direction.RIGHT, () -> startActivity(i2));
         });
-        mDebugDummyButton .setOnClickListener(v13 -> {
+        mDebugDummyButton.setOnClickListener(v13 -> {
             mReport.from(Report.dummy());
             updateUI();
         });
@@ -260,7 +256,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     @Override
     public void onStart() {
         super.onStart();
-        mSendFABTimer= new ReportCheckTimer();
+        mSendFABTimer = new ReportCheckTimer();
     }
 
     @Override
@@ -401,7 +397,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             itemView.setLayoutParams(params);
 
             itemView.setOnClickListener(this);
-            mTimeTextView = itemView.findViewById(R.id.item_time_text);
+            mTimeTextView = itemView.findViewById(R.id.time_text);
         }
 
         void bind(Time time) {
@@ -443,7 +439,8 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull TimeHolder timeHolder, int i) {}
+        public void onBindViewHolder(@NonNull TimeHolder timeHolder, int i) {
+        }
 
         @Override
         public int getItemCount() {

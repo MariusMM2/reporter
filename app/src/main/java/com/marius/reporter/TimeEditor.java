@@ -5,7 +5,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import com.marius.reporter.Report.Time;
 import com.marius.reporter.fragments.ReportFragment;
 import com.marius.reporter.utils.anim.ViewElevator;
 import com.marius.reporter.utils.anim.ViewTranslator;

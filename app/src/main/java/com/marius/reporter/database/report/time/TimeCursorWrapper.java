@@ -2,7 +2,7 @@ package com.marius.reporter.database.report.time;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import com.marius.reporter.Report.Time;
+import com.marius.reporter.Time;
 
 public class TimeCursorWrapper extends CursorWrapper {
 
