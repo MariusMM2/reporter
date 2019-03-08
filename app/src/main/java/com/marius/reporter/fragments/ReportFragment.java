@@ -395,6 +395,11 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
         TimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_time, parent, false));
+
+            ViewGroup.LayoutParams params = itemView.getLayoutParams();
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            itemView.setLayoutParams(params);
+
             itemView.setOnClickListener(this);
             mTimeTextView = itemView.findViewById(R.id.item_time_text);
         }
