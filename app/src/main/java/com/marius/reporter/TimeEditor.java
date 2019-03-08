@@ -105,7 +105,7 @@ public class TimeEditor implements ReportFragment.OnTouchOutsideListener {
 
     private void updateText() {
         if (mTimeHolderCard != null)
-            ((TextView) mTimeHolderCard.findViewById(R.id.item_time_text)).setText(mTime.toString());
+            ((TextView) mTimeHolderCard.findViewById(R.id.time_text)).setText(mTime.toString());
     }
 
     public boolean isShown() {
