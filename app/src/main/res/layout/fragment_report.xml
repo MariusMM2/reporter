@@ -30,14 +30,24 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/flyer_name"
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/flyer_name"
-                android:inputType="text|textMultiLine"
-                android:lines="3"
-                tools:text="@sample/tools:lorem/random" />
+                android:layout_height="match_parent"
+                android:paddingBottom="16dp">
+
+                <com.marius.reporter.utils.TextInputAutoCompleteTextView
+                    android:id="@+id/flyer_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/flyer_name"
+                    android:imeOptions="actionDone"
+                    android:inputType="text|textMultiLine|textAutoComplete"
+                    android:lines="3"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp"
+                    tools:text="@sample/tools:lorem/random" />
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -60,18 +70,29 @@
                     android:layout_weight="1"
                     android:inputType="number"
                     android:selectAllOnFocus="true"
+                    android:imeOptions="actionDone"
                     tools:ignore="LabelFor"
                     tools:text="000" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/gps_name"
+            <android.support.design.widget.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/gps_name"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                tools:text="@sample/tools:lorem" />
+                android:paddingBottom="16dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/gps_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/gps_name"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:minWidth="160dp"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="12dp"
+                    tools:text="@sample/tools:lorem" />
+            </android.support.design.widget.TextInputLayout>
 
         </LinearLayout>
 

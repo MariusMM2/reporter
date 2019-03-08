@@ -119,6 +119,23 @@ public class Report {
         return timesBuilder.toString();
     }
 
+    public String getName() {
+        final int commaIndex = mFlyerName.indexOf(',');
+        if (commaIndex != -1) {
+            return mFlyerName.substring(0, commaIndex);
+        } else {
+            return getFlyerName();
+        }
+    }
+
+    public String getAddress() {
+        if (mFlyerName.indexOf(',') != -1) {
+            return mFlyerName.substring(mFlyerName.indexOf(',') + 1).trim();
+        } else {
+            return "";
+        }
+    }
+
     public void reset() {
         mFlyerName = "";
         mRemainingFlyers = 0;

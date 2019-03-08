@@ -21,12 +21,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.*;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.marius.reporter.*;
 import com.marius.reporter.database.FlyerNameRepo;
 import com.marius.reporter.database.ReportRepo;
+import com.marius.reporter.utils.TextInputAutoCompleteTextView;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     private Callbacks mCallbacks;
 
     private ViewGroup mMainLayout;
-    private AutoCompleteTextView mFlyerNameField;
+    private TextInputAutoCompleteTextView mFlyerNameField;
     private AppCompatCheckBox mQuantityLeftLabel;
     private EditText mQuantityLeftField;
     private EditText mGpsNameField;

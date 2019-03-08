@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -132,12 +133,14 @@ public class ReportListFragment extends Fragment {
     private class ReportHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Report mReport;
         private TextView mTitleTextView;
+        private TextView mAddressTextView;
         private TextView mTimeTextView;
 
         private ReportHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_report, parent, false));
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.report_title);
+            mAddressTextView = itemView.findViewById(R.id.report_address);
             mTimeTextView = itemView.findViewById(R.id.time_text);
 
             CardView timeCard = itemView.findViewById(R.id.time_card);
@@ -147,7 +150,15 @@ public class ReportListFragment extends Fragment {
 
         private void bind(Report report) {
             mReport = report;
-            mTitleTextView.setText(mReport.getFlyerName());
+            mTitleTextView.setText(mReport.getName());
+            String address = mReport.getAddress();
+            if (address.equals("")) {
+                mAddressTextView.setVisibility(View.GONE);
+            } else {
+                mAddressTextView.setText(address);
+            }
+
+
             mTimeTextView.setText(mReport.getTotalTime());
 
             if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
