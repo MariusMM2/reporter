@@ -139,6 +139,10 @@ public class ReportListFragment extends Fragment {
             itemView.setOnClickListener(this);
             mTitleTextView = itemView.findViewById(R.id.report_title);
             mTimeTextView = itemView.findViewById(R.id.time_text);
+
+            CardView timeCard = itemView.findViewById(R.id.time_card);
+            timeCard.setClickable(false);
+            timeCard.setForeground(null);
         }
 
         private void bind(Report report) {
