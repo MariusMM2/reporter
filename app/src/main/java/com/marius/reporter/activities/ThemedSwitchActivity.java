@@ -17,10 +17,12 @@ import com.marius.reporter.Settings;
 public class ThemedSwitchActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
+    private boolean mDarkMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(Settings.getInstance(this).darkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
+        mDarkMode = Settings.getInstance(this).darkMode;
+        setTheme(mDarkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
         super.onCreate(savedInstanceState);
     }
 
@@ -31,12 +33,20 @@ public class ThemedSwitchActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mDarkMode != Settings.getInstance(this).darkMode) {
+            recreate();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.daynight_menu, menu);
 
         DayNightSwitch dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
-        dayNightSwitch.setIsNight(Settings.getInstance(this).darkMode);
+        dayNightSwitch.setIsNight(mDarkMode);
         dayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
             @Override
             public void onAnimStart() {
