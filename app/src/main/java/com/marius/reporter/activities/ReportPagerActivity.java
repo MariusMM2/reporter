@@ -31,8 +31,6 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        themeTransitionDone();
-
         setContentView(R.layout.activity_report_pager);
 
         UUID reportId = (UUID) getIntent().getSerializableExtra(EXTRA_REPORT_ID);

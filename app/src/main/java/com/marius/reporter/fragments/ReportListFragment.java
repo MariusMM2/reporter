@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
@@ -46,7 +47,6 @@ public class ReportListFragment extends Fragment {
      */
     public interface Callbacks {
         void onReportSelected(Report report);
-        void onReportDeleted(Report report);
     }
 
     @Override
@@ -153,6 +153,7 @@ public class ReportListFragment extends Fragment {
             mTitleTextView.setText(mReport.getName());
             String address = mReport.getAddress();
             if (address.equals("")) {
+                Log.d(TAG, String.format("Report %s has no address", mReport.toString()));
                 mAddressTextView.setVisibility(View.GONE);
             } else {
                 mAddressTextView.setText(address);
@@ -207,7 +208,6 @@ public class ReportListFragment extends Fragment {
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
             ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
-            mCallbacks.onReportDeleted(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
             showUndoSnackbar();
