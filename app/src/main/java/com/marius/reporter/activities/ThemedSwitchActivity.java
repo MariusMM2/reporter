@@ -3,7 +3,6 @@ package com.marius.reporter.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -55,6 +54,8 @@ public class ThemedSwitchActivity extends AppCompatActivity {
                         .putExtra(EXTRA_ON_THEME_REFRESH, true);
 
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
                 finish();
             }
 
