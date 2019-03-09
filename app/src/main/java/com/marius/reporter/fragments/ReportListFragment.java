@@ -153,9 +153,9 @@ public class ReportListFragment extends Fragment {
             mTitleTextView.setText(mReport.getName());
             String address = mReport.getAddress();
             if (address.equals("")) {
-                Log.d(TAG, String.format("Report %s has no address", mReport.toString()));
                 mAddressTextView.setVisibility(View.GONE);
             } else {
+                mAddressTextView.setVisibility(View.VISIBLE);
                 mAddressTextView.setText(address);
             }
 
