@@ -84,8 +84,8 @@ public class ReportListFragment extends Fragment {
         mAdapter = new ReportAdapter();
         mReportRecyclerView.setAdapter(mAdapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
-        itemTouchHelper.attachToRecyclerView(mReportRecyclerView);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
+//        itemTouchHelper.attachToRecyclerView(mReportRecyclerView);
     }
 
     @Override
