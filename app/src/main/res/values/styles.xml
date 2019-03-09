@@ -12,7 +12,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="cardViewStyle">@style/CardViewStyle</item>
         <item name="floatingActionButtonStyle">@style/Widget.Design.FloatingActionButton</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
