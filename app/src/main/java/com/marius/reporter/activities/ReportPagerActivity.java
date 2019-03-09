@@ -23,7 +23,7 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
 
     public static Intent newIntent(Context packageContext, UUID reportId) {
         Intent intent = new Intent(packageContext, ReportPagerActivity.class);
-        intent.putExtra(EXTRA_REPORT_ID, reportId);
+        intent.putExtra(EXTRA_REPORT_ID, reportId.toString());
         return intent;
     }
 
@@ -33,7 +33,7 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
 
         setContentView(R.layout.activity_report_pager);
 
-        UUID reportId = (UUID) getIntent().getSerializableExtra(EXTRA_REPORT_ID);
+        UUID reportId = UUID.fromString(getIntent().getStringExtra(EXTRA_REPORT_ID));
 
         mViewPager = findViewById(R.id.report_view_pager);
         mReports = ReportRepo.getInstance(this).getReports();
@@ -61,7 +61,7 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
 
     @Override
     protected Intent getCurrentState() {
-        return new Intent().putExtra(EXTRA_REPORT_ID, mReports.get(mViewPager.getCurrentItem()).getId());
+        return new Intent().putExtra(EXTRA_REPORT_ID, mReports.get(mViewPager.getCurrentItem()).getId().toString());
     }
 
     @Override

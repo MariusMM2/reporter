@@ -10,7 +10,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
@@ -18,10 +17,7 @@ import com.marius.reporter.Report;
 import com.marius.reporter.Settings;
 import com.marius.reporter.database.ReportRepo;
 
-import java.io.Serializable;
 import java.util.List;
-
-import static com.marius.reporter.activities.ReportPagerActivity.EXTRA_REPORT_ID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -161,11 +157,6 @@ public class ReportListFragment extends Fragment {
 
 
             mTimeTextView.setText(mReport.getTotalTime());
-
-            if (mReport.getId().equals(getActivity().getIntent().getSerializableExtra(EXTRA_REPORT_ID))) {
-                getActivity().getIntent().putExtra(EXTRA_REPORT_ID, (Serializable) null);
-                onClick(null);
-            }
         }
 
         @Override
