@@ -2,6 +2,7 @@ package com.marius.reporter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import java.util.Map;
@@ -18,17 +19,17 @@ public class Settings {
     }
 
     private static class Key {
-        private static final String DARK_MODE = "darkMode";
-        private static final String GPS_NAME = "gpsName";
+        private static final String NIGHT_MODE = "nightMode",
+                GPS_NAME = "gpsName";
     }
 
-    public boolean darkMode;
+    public boolean nightMode;
     public String gpsName;
 
     private Settings(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        darkMode = prefs.getBoolean(Key.DARK_MODE, false);
-        gpsName  = prefs.getString(Key.GPS_NAME, "");
+        nightMode = prefs.getBoolean(Key.NIGHT_MODE, false);
+        gpsName = prefs.getString(Key.GPS_NAME, "");
 
         logPrefs(prefs, "Loaded");
     }
@@ -36,7 +37,7 @@ public class Settings {
     public synchronized void save(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(Key.DARK_MODE, darkMode);
+        editor.putBoolean(Key.NIGHT_MODE, nightMode);
         editor.putString(Key.GPS_NAME, gpsName);
 
         editor.apply();
@@ -49,5 +50,11 @@ public class Settings {
         for (String key : prefsAll.keySet()) {
             Log.i(TAG, String.format(s + " preference: %s = %s", key, prefsAll.get(key)));
         }
+    }
+
+    public void refreshTheme() {
+        AppCompatDelegate.setDefaultNightMode(nightMode ?
+                AppCompatDelegate.MODE_NIGHT_YES :
+                AppCompatDelegate.MODE_NIGHT_NO);
     }
 }

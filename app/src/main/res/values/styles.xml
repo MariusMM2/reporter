@@ -1,22 +1,8 @@
 <resources>
 
-    <style name="AppDayTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="cardViewStyle">@style/CardView.Light</item>
         <item name="floatingActionButtonStyle">@style/Widget.Design.FloatingActionButton</item>
         <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
     </style>
-
-    <style name="AppNightTheme" parent="Base.Theme.AppCompat">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="cardViewStyle">@style/CardViewStyle</item>
-        <item name="floatingActionButtonStyle">@style/Widget.Design.FloatingActionButton</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="CardViewStyle" parent="CardView.Dark">
-        <item name="cardBackgroundColor">@color/colorPrimaryDark</item>
-    </style>
-
 </resources>

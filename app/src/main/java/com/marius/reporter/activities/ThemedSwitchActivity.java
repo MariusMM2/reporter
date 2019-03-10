@@ -1,6 +1,5 @@
 package com.marius.reporter.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,17 +11,13 @@ import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Settings;
 
-//A template Activity with a day/night switch in the menu
-@SuppressLint("Registered")
-public class ThemedSwitchActivity extends AppCompatActivity {
+//An Activity with a day/night switch in the menu
+public abstract class ThemedSwitchActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
-    private boolean mDarkMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        mDarkMode = Settings.getInstance(this).darkMode;
-        setTheme(mDarkMode ? R.style.AppNightTheme : R.style.AppDayTheme);
         super.onCreate(savedInstanceState);
     }
 
@@ -35,9 +30,24 @@ public class ThemedSwitchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mDarkMode != Settings.getInstance(this).darkMode) {
-            recreate();
-        }
+//        if (this.getda != ) {
+//
+//        }
+//        int nightModeFlags = getResources().getConfiguration().uiMode &
+//                        Configuration.UI_MODE_NIGHT_MASK;
+//        switch (nightModeFlags) {
+//            case Configuration.UI_MODE_NIGHT_YES:
+//                if getDelegate().getd
+//                break;
+//
+//            case Configuration.UI_MODE_NIGHT_NO:
+//                doStuff();
+//                break;
+//
+//            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+//                doStuff();
+//                break;
+//        }
     }
 
     @Override
@@ -46,7 +56,7 @@ public class ThemedSwitchActivity extends AppCompatActivity {
         inflater.inflate(R.menu.daynight_menu, menu);
 
         DayNightSwitch dayNightSwitch = menu.findItem(R.id.day_night_switch).getActionView().findViewById(R.id.switch_item);
-        dayNightSwitch.setIsNight(mDarkMode);
+        dayNightSwitch.setIsNight(Settings.getInstance(this).nightMode);
         dayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
             @Override
             public void onAnimStart() {
@@ -69,7 +79,10 @@ public class ThemedSwitchActivity extends AppCompatActivity {
 
             }
         });
-        dayNightSwitch.setListener(isNight -> Settings.getInstance(this).darkMode = isNight);
+        dayNightSwitch.setListener(isNight -> {
+            Settings.getInstance(this).nightMode = isNight;
+            Settings.getInstance(this).refreshTheme();
+        });
 
         return true;
     }
