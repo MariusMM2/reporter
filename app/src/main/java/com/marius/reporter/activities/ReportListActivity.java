@@ -25,6 +25,7 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
             mQueuedReportId = report.getId();
             Intent intent = ReportPagerActivity.newIntent(this, report.getId());
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, android.R.anim.fade_out);
         }
     }
 

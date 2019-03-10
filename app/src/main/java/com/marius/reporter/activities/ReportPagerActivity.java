@@ -68,4 +68,10 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
     public void onReportUpdated(Report report) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.slide_out_right);
+    }
 }

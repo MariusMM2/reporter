@@ -275,6 +275,9 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
             case R.id.reset_report:
                 mReport.reset();
                 mReport.setCallBacks(this);
