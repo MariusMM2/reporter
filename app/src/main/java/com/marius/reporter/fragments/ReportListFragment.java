@@ -81,8 +81,7 @@ public class ReportListFragment extends Fragment {
         mAdapter = new ReportAdapter();
         mReportRecyclerView.setAdapter(mAdapter);
 
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter));
-//        itemTouchHelper.attachToRecyclerView(mReportRecyclerView);
+        new ItemTouchHelper(new SwipeToDeleteCallback(mAdapter)).attachToRecyclerView(mReportRecyclerView);
     }
 
     @Override
@@ -206,7 +205,7 @@ public class ReportListFragment extends Fragment {
         }
 
         private void showUndoSnackbar() {
-            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.fragment_container);
+            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.report_list_coordinator);
             Snackbar snackbar = Snackbar.make(view, "Report Deleted", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> undoDelete());
             snackbar.show();
