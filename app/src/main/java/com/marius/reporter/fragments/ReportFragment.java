@@ -269,6 +269,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_report, menu);
+        menu.findItem(R.id.reset_report).setEnabled(false);
     }
 
     @SuppressWarnings("SwitchStatementWithTooFewBranches")
