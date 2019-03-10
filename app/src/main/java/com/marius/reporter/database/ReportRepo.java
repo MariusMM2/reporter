@@ -1,5 +1,6 @@
 package com.marius.reporter.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,13 +23,11 @@ public class ReportRepo {
         return instance;
     }
 
-    private Context mContext;
     private SQLiteDatabase mDatabase;
     private TimeRepo mTimeRepo;
 
-    public ReportRepo(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new ReportBaseHelper(mContext).getWritableDatabase();
+    private ReportRepo(Context context) {
+        mDatabase = new ReportBaseHelper(context.getApplicationContext()).getWritableDatabase();
         mTimeRepo = TimeRepo.getInstance(context);
     }
 
@@ -43,16 +42,12 @@ public class ReportRepo {
     public List<Report> getReports() {
         List<Report> reports = new ArrayList<>();
 
-        ReportCursorWrapper cursor = queryReports(null, null);
-
-        try {
+        try (ReportCursorWrapper cursor = queryReports(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 reports.add(cursor.getReport());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
 
         for (Report report : reports) {
@@ -63,12 +58,11 @@ public class ReportRepo {
     }
 
     public Report getReport(UUID id) {
-        ReportCursorWrapper cursor = queryReports(
+
+        try (ReportCursorWrapper cursor = queryReports(
                 ReportTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
-        );
-
-        try {
+        )) {
             if (cursor.getCount() == 0) {
                 return null;
             }
@@ -77,8 +71,6 @@ public class ReportRepo {
             Report report = cursor.getReport();
             mTimeRepo.getTimes(report);
             return report;
-        } finally {
-            cursor.close();
         }
     }
 
@@ -114,7 +106,7 @@ public class ReportRepo {
     }
 
     private ReportCursorWrapper queryReports(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
                 ReportTable.NAME,
                 null, // columns - null selects all columns
                 whereClause,

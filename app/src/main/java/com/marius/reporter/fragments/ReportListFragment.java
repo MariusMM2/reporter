@@ -18,6 +18,7 @@ import com.marius.reporter.Settings;
 import com.marius.reporter.database.ReportRepo;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -205,7 +206,7 @@ public class ReportListFragment extends Fragment {
         }
 
         private void showUndoSnackbar() {
-            View view = getActivity().findViewById(R.id.fragment_container);
+            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.fragment_container);
             Snackbar snackbar = Snackbar.make(view, "Report Deleted", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> undoDelete());
             snackbar.show();
@@ -218,6 +219,7 @@ public class ReportListFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("unused")
     class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
         private ReportAdapter mAdapter;

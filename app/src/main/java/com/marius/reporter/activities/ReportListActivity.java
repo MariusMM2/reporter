@@ -33,6 +33,7 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
     public void onReportUpdated(Report report) {
         ReportListFragment listFragment = (ReportListFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
+        assert listFragment != null;
         listFragment.updateUI();
     }
 

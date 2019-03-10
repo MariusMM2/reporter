@@ -1,5 +1,6 @@
 package com.marius.reporter.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,8 +12,10 @@ import com.marius.reporter.database.flyername.FlyerNameDbSchema.FlyerNameTable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class FlyerNameRepo {
     private static FlyerNameRepo instance;
+
     public static FlyerNameRepo getInstance(Context context) {
         if (instance == null) {
             instance = new FlyerNameRepo(context);
@@ -20,12 +23,10 @@ public class FlyerNameRepo {
         return instance;
     }
 
-    private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    public FlyerNameRepo(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new FlyerNameBaseHelper(mContext).getWritableDatabase();
+    private FlyerNameRepo(Context context) {
+        mDatabase = new FlyerNameBaseHelper(context.getApplicationContext()).getWritableDatabase();
     }
 
     public void addFlyerName(String flyerName) {
@@ -70,7 +71,7 @@ public class FlyerNameRepo {
     }
 
     private FlyerNameCursorWrapper queryFlyerNames(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
                 FlyerNameTable.NAME,
                 null, // columns - null selects all columns
                 whereClause,

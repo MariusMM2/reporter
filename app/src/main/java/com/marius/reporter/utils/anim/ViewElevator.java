@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import com.marius.reporter.R;
 
+@SuppressWarnings("WeakerAccess")
 public class ViewElevator {
     public static int duration = -1;
 

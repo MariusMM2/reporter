@@ -11,6 +11,7 @@ public abstract class SingleFragmentActivity extends ThemedSwitchActivity {
     protected abstract Fragment createFragment();
 
     //To be overridden if the activity contains multiple fragments
+    @SuppressWarnings("WeakerAccess")
     @LayoutRes
     protected int getLayoutResId() {
         return R.layout.activity_fragment;

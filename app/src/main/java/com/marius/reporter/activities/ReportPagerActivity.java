@@ -15,13 +15,14 @@ import com.marius.reporter.fragments.ReportFragment;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class ReportPagerActivity extends ThemedSwitchActivity implements ReportFragment.Callbacks {
-    public static final String EXTRA_REPORT_ID = "com.marius.reporter.activities.report_id";
+    private static final String EXTRA_REPORT_ID = "com.marius.reporter.activities.report_id";
 
     private ViewPager mViewPager;
     private List<Report> mReports;
 
-    public static Intent newIntent(Context packageContext, UUID reportId) {
+    static Intent newIntent(Context packageContext, UUID reportId) {
         Intent intent = new Intent(packageContext, ReportPagerActivity.class);
         intent.putExtra(EXTRA_REPORT_ID, reportId.toString());
         return intent;
@@ -57,11 +58,6 @@ public class ReportPagerActivity extends ThemedSwitchActivity implements ReportF
                 break;
             }
         }
-    }
-
-    @Override
-    protected Intent getCurrentState() {
-        return new Intent().putExtra(EXTRA_REPORT_ID, mReports.get(mViewPager.getCurrentItem()).getId().toString());
     }
 
     @Override

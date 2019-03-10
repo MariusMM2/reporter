@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("WeakerAccess")
 public class Time {
     private UUID mId;
     private byte hours;
@@ -68,6 +69,7 @@ public class Time {
         return result;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public String toString() {
         return String.format(Locale.UK, "%02d:%02d:%02d", hours, minutes, seconds);

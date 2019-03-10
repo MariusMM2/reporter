@@ -1,5 +1,6 @@
 package com.marius.reporter.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,12 +22,10 @@ class TimeRepo {
         return instance;
     }
 
-    private Context mContext;
     private SQLiteDatabase mDatabase;
 
     private TimeRepo(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new TimeBaseHelper(mContext).getWritableDatabase();
+        mDatabase = new TimeBaseHelper(context.getApplicationContext()).getWritableDatabase();
     }
 
     void addTimes(Report report) {
@@ -42,19 +41,16 @@ class TimeRepo {
 
     void getTimes(Report report) {
         String uuidString = report.getId().toString();
-        TimeCursorWrapper cursor = queryTimes(
+
+        try (TimeCursorWrapper cursor = queryTimes(
                 TimeTable.Cols.REPORT_UUID + " = ?",
                 new String[]{uuidString}
-        );
-
-        try {
+        )) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 report.add(cursor.getTime());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
     }
 
@@ -75,8 +71,9 @@ class TimeRepo {
         return values;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private TimeCursorWrapper queryTimes(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(
                 TimeDbSchema.TimeTable.NAME,
                 null, // columns - null selects all columns
                 whereClause,

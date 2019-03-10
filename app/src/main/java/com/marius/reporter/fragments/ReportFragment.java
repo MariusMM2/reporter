@@ -272,7 +272,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         menu.findItem(R.id.reset_report).setEnabled(false);
     }
 
-    @SuppressWarnings("SwitchStatementWithTooFewBranches")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -56,7 +56,7 @@ public class ThemedSwitchActivity extends AppCompatActivity {
             @Override
             public void onAnimEnd() {
                 Intent intent = new Intent(ThemedSwitchActivity.this, ThemedSwitchActivity.this.getClass());
-                intent.putExtras(getCurrentState());
+                intent.putExtras(getIntent());
 
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -72,9 +72,5 @@ public class ThemedSwitchActivity extends AppCompatActivity {
         dayNightSwitch.setListener(isNight -> Settings.getInstance(this).darkMode = isNight);
 
         return true;
-    }
-
-    protected Intent getCurrentState() {
-        return getIntent();
     }
 }

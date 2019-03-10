@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.*;
 import com.marius.reporter.R;
 
+@SuppressWarnings("WeakerAccess")
 public class ViewTranslator {
 
     public enum Direction {
@@ -21,7 +22,7 @@ public class ViewTranslator {
         DOWN
     }
 
-    private static int duration = -1;
+    public static int duration = -1;
 
     public static void moveToBehind(View mainView, View coverView) {
         moveToBehind(mainView, coverView, getDuration(mainView));

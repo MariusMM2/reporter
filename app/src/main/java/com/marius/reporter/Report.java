@@ -153,7 +153,6 @@ public class Report {
         notifyChange();
     }
 
-    @SuppressWarnings("SpellCheckingInspection")
     public static Report dummy() {
         Report report = new Report();
 
