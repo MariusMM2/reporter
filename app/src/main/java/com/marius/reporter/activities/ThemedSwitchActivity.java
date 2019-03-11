@@ -16,9 +16,12 @@ public abstract class ThemedSwitchActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
     private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
 
+    private boolean nightMode;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        nightMode = Settings.getInstance(this).nightMode;
     }
 
     @Override
@@ -30,24 +33,9 @@ public abstract class ThemedSwitchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        if (this.getda != ) {
-//
-//        }
-//        int nightModeFlags = getResources().getConfiguration().uiMode &
-//                        Configuration.UI_MODE_NIGHT_MASK;
-//        switch (nightModeFlags) {
-//            case Configuration.UI_MODE_NIGHT_YES:
-//                if getDelegate().getd
-//                break;
-//
-//            case Configuration.UI_MODE_NIGHT_NO:
-//                doStuff();
-//                break;
-//
-//            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-//                doStuff();
-//                break;
-//        }
+        if (nightMode != Settings.getInstance(this).nightMode) {
+            recreate();
+        }
     }
 
     @Override
