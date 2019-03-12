@@ -72,7 +72,8 @@ public class Time {
     @SuppressWarnings("NullableProblems")
     @Override
     public String toString() {
-        return String.format(Locale.UK, "%02d:%02d:%02d", hours, minutes, seconds);
+        return hours >= 0 && hours < 99 ? String.format(Locale.UK, "%02d:%02d:%02d", hours, minutes, seconds)
+                : "99:99:99";
     }
 
     @Override
