@@ -3,6 +3,7 @@ package com.marius.reporter.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -487,6 +488,15 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
             mAdapter = adapter;
 
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            float width = viewHolder.itemView.getWidth();
+            float ratio = (width - Math.abs(dX) * 2f) / width;
+            viewHolder.itemView.setAlpha(ratio);
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
 
         @Override
