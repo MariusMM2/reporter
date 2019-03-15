@@ -9,6 +9,7 @@
         <item name="floatingActionButtonStyle">@style/Widget.Design.FloatingActionButton</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="snackbarStyle">@style/SnackBar</item>
     </style>
 
     <style name="CardViewStyle" parent="CardView.Dark">

@@ -24,7 +24,7 @@
         <!--<item name="android:tint">@android:color/darker_gray</item>-->
     </style>
 
-    <style name="SnackBar" parent="Widget.MaterialComponents.Snackbar.FullWidth">
+    <style name="SnackBar" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:textColor">@color/snackbarTextColor</item>
     </style>
 </resources>
