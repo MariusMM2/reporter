@@ -483,6 +483,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
     class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
         private TimeAdapter mAdapter;
+        private float defaultItemElevation;
 
         SwipeToDeleteCallback(TimeAdapter adapter) {
             super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
@@ -493,8 +494,16 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             float width = viewHolder.itemView.getWidth();
-            float ratio = (width - Math.abs(dX) * 2f) / width;
+            float ratio = (width - Math.abs(dX)) / width;
+
             viewHolder.itemView.setAlpha(ratio);
+
+            if (viewHolder.itemView.getElevation() != 0f) {
+                defaultItemElevation = viewHolder.itemView.getElevation();
+            }
+
+            viewHolder.itemView.setElevation(dX != 0f ? 0f : defaultItemElevation);
+            viewHolder.itemView.getElevation();
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
