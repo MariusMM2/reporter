@@ -210,7 +210,7 @@ public class ReportListFragment extends Fragment {
         }
 
         private void showUndoSnackbar() {
-            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.report_list_coordinator);
+            View view = Objects.requireNonNull(getActivity()).findViewById(R.id.report_recycler_view);
             Snackbar snackbar = Snackbar.make(view, "Report Deleted", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", v -> undoDelete());
             snackbar.show();
