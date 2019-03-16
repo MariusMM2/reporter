@@ -12,6 +12,7 @@ import com.marius.reporter.database.report.ReportCursorWrapper;
 import com.marius.reporter.database.report.ReportDbSchema.ReportTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,19 +88,22 @@ public class ReportRepo {
                 new String[]{uuidString});
     }
 
-    public void deleteReport(UUID id) {
-        mTimeRepo.deleteTimes(getReport(id));
+    public void delete(Report report) {
+        mTimeRepo.deleteTimes(report);
+        String uuidString = report.getId().toString();
 
-        String uuidString = id.toString();
+        String[] whereArgs = {uuidString};
+        Log.d(TAG, String.format("whereArgs: %s", Arrays.toString(whereArgs)));
+
         int result = mDatabase.delete(ReportTable.NAME,
                 ReportTable.Cols.UUID + " = ?",
-                new String[]{uuidString});
+                whereArgs);
         if (result == 1)
-            Log.i(TAG, String.format("Deleted Report with id %s", uuidString));
+            Log.i(TAG, String.format("Deleted Report %s", report.toString()));
         else if (result == 0)
-            Log.w(TAG, String.format("No Reports found with id %s", uuidString));
+            Log.w(TAG, String.format("No Report found for %s", report.toString()));
         else
-            Log.w(TAG, String.format("Deleted more than one report (%d) for id %s", result, uuidString));
+            Log.e(TAG, String.format("Deleted more than one report (%d) for %s", result, report.toString()));
     }
 
     private static ContentValues getContentValues(Report report) {

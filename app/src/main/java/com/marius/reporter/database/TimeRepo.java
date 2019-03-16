@@ -6,17 +6,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import com.marius.reporter.Report;
-import com.marius.reporter.Time;
 import com.marius.reporter.database.report.time.TimeBaseHelper;
 import com.marius.reporter.database.report.time.TimeCursorWrapper;
 import com.marius.reporter.database.report.time.TimeDbSchema;
 import com.marius.reporter.database.report.time.TimeDbSchema.TimeTable;
+import com.marius.reporter.models.Report;
+import com.marius.reporter.models.Time;
+
+import java.util.Arrays;
 
 class TimeRepo {
     private static final String TAG = TimeRepo.class.getSimpleName();
-    private static TimeRepo instance;
 
+    private static TimeRepo instance;
     static TimeRepo getInstance(Context context) {
         if (instance == null) {
             instance = new TimeRepo(context);
@@ -58,13 +60,16 @@ class TimeRepo {
 
     void deleteTimes(Report report) {
         String uuidString = report.getId().toString();
+        String[] whereArgs = {uuidString};
+        Log.d(TAG, String.format("whereArgs: %s", Arrays.toString(whereArgs)));
+
         int result = mDatabase.delete(TimeTable.NAME,
                 TimeTable.Cols.REPORT_UUID + " = ?",
-                new String[]{uuidString});
+                whereArgs);
         if (result != 0)
-            Log.i(TAG, String.format("Deleted %d Times for report id %s", result, uuidString));
+            Log.i(TAG, String.format("Deleted %d Times for %s", result, report.toString()));
         else
-            Log.w(TAG, String.format("No Time records found for report id %s", uuidString));
+            Log.w(TAG, String.format("No Time records found for %s", report.toString()));
     }
 
     private static ContentValues getContentValues(Time time, Report report) {
