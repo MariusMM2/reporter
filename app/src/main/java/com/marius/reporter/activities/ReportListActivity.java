@@ -21,12 +21,17 @@ public class ReportListActivity extends SingleFragmentActivity implements Report
 
     @Override
     public void onReportSelected(Report report) {
-        if (mQueuedReportId == null) {
+        if (!hasReportQueued()) {
             mQueuedReportId = report.getId();
             Intent intent = ReportPagerActivity.newIntent(this, report.getId());
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_right, android.R.anim.fade_out);
         }
+    }
+
+    @Override
+    public boolean hasReportQueued() {
+        return mQueuedReportId != null;
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +40,7 @@ public class ReportListFragment extends Fragment {
 
     private Settings mSettings;
 
+    private FloatingActionButton mNewReportFAB;
     private RecyclerView mReportRecyclerView;
     private ReportAdapter mAdapter;
     private Callbacks mCallbacks;
@@ -51,6 +53,8 @@ public class ReportListFragment extends Fragment {
      */
     public interface Callbacks {
         void onReportSelected(Report report);
+
+        boolean hasReportQueued();
     }
 
     @Override
@@ -77,12 +81,15 @@ public class ReportListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_report_list, container, false);
 
+        mNewReportFAB = v.findViewById(R.id.new_report);
         mReportRecyclerView = v.findViewById(R.id.report_recycler_view);
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mNewReportFAB.setOnClickListener(v -> newReport());
+
         mReportRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mAdapter = new ReportAdapter();
@@ -111,18 +118,20 @@ public class ReportListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
         //noinspection SwitchStatementWithTooFewBranches
-        switch (item.getItemId()) {
-            case R.id.new_report:
-                Report report = new Report();
-                report.setGPSName(mSettings.gpsName);
-                mCallbacks.onReportSelected(report);
-                ReportRepo.getInstance(getActivity()).addReport(report);
-                mAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
-                mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
-                return true;
+        switch (id) {
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void newReport() {
+        if (!mCallbacks.hasReportQueued()) {
+            Report report = new Report();
+            report.setGPSName(mSettings.gpsName);
+            mCallbacks.onReportSelected(report);
+            mAdapter.addReport(report);
         }
     }
 
@@ -205,6 +214,13 @@ public class ReportListFragment extends Fragment {
 
         private void setReports(List<Report> reports) {
             mReports = reports;
+        }
+
+        public void addReport(Report report) {
+            ReportRepo.getInstance(getActivity()).addReport(report);
+            mReports.add(report);
+            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+
         }
 
         private void deleteReport(int position) {

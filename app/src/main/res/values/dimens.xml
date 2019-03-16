@@ -6,4 +6,5 @@
     <dimen name="fab_elevation_low">4dp</dimen>
     <dimen name="fab_elevation_high">10dp</dimen>
     <dimen name="time_editor_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
