@@ -88,7 +88,7 @@ public class ReportRepo {
                 new String[]{uuidString});
     }
 
-    public void delete(Report report) {
+    public void deleteReport(Report report) {
         mTimeRepo.deleteTimes(report);
         String uuidString = report.getId().toString();
 

@@ -118,7 +118,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         };
 
         UUID reportId = (UUID) getArguments().getSerializable(Arg.REPORT_ID);
-        mReport = ReportRepo.getInstance(getActivity()).query(reportId);
+        mReport = ReportRepo.getInstance(getActivity()).getReport(reportId);
         mReport.setCallBacks(this);
     }
 
@@ -210,7 +210,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
         });
         mSendReportButton.setOnClickListener(v12 -> {
-            FlyerNameRepo.getInstance(getActivity()).insert(mReport.getFlyerName());
+            FlyerNameRepo.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
@@ -319,7 +319,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mTimeListAdapter.setReport(mReport);
         mTimeListAdapter.notifyDataSetChanged();
         mFlyerNameArrayAdapter.clear();
-        mFlyerNameArrayAdapter.addAll(FlyerNameRepo.getInstance(getActivity()).queryAll());
+        mFlyerNameArrayAdapter.addAll(FlyerNameRepo.getInstance(getActivity()).getFlyerNames());
         mFlyerNameArrayAdapter.notifyDataSetChanged();
     }
 
@@ -355,7 +355,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     @Override
     public void reportChanged() {
-        ReportRepo.getInstance(getActivity()).update(mReport);
+        ReportRepo.getInstance(getActivity()).updateReport(mReport);
         mCallbacks.onReportUpdated(mReport);
         if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }

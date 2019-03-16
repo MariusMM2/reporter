@@ -117,8 +117,8 @@ public class ReportListFragment extends Fragment {
                 Report report = new Report();
                 report.setGPSName(mSettings.gpsName);
                 mCallbacks.onReportSelected(report);
-                ReportRepo.getInstance(getActivity()).insert(report);
-                mAdapter.setReports(ReportRepo.getInstance(getActivity()).queryAll());
+                ReportRepo.getInstance(getActivity()).addReport(report);
+                mAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
                 mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
                 return true;
             default:
@@ -127,7 +127,7 @@ public class ReportListFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Report> reports = ReportRepo.getInstance(getActivity()).queryAll();
+        List<Report> reports = ReportRepo.getInstance(getActivity()).getReports();
 
         mAdapter.setReports(reports);
         mAdapter.notifyDataSetChanged();
@@ -209,7 +209,7 @@ public class ReportListFragment extends Fragment {
 
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
-            ReportRepo.getInstance(getActivity()).delete(mRecentlyDeletedReport);
+            ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
             showUndoSnackbar();
@@ -223,7 +223,7 @@ public class ReportListFragment extends Fragment {
         }
 
         private void undoDelete() {
-            ReportRepo.getInstance(getActivity()).insert(mRecentlyDeletedReport);
+            ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReport);
             mReports.add(mRecentlyDeletedReport);
             notifyItemInserted(mReports.indexOf(mRecentlyDeletedReport));
         }
