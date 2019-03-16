@@ -64,7 +64,7 @@ class TimeRepo {
         if (result != 0)
             Log.i(TAG, String.format("Deleted %d Times for report id %s", result, uuidString));
         else
-            Log.e(TAG, String.format("No Time records found for report id %s", uuidString));
+            Log.w(TAG, String.format("No Time records found for report id %s", uuidString));
     }
 
     private static ContentValues getContentValues(Time time, Report report) {
