@@ -175,6 +175,11 @@ public class Report {
         return report;
     }
 
+    @Override
+    public String toString() {
+        return String.format("'%s' (%s)", getName(), getId());
+    }
+
     //Times list delegates
     public int size() {
         return mTimes.size();
