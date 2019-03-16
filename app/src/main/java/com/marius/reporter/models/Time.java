@@ -1,4 +1,4 @@
-package com.marius.reporter;
+package com.marius.reporter.models;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -21,10 +21,6 @@ public class Time {
 
     public UUID getId() {
         return mId;
-    }
-
-    public void setId(UUID id) {
-        mId = id;
     }
 
     public byte getHours() {

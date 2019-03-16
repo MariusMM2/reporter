@@ -1,4 +1,4 @@
-package com.marius.reporter;
+package com.marius.reporter.models;
 
 import com.thedeanda.lorem.Lorem;
 import com.thedeanda.lorem.LoremIpsum;

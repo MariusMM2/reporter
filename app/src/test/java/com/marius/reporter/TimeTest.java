@@ -1,5 +1,6 @@
 package com.marius.reporter;
 
+import com.marius.reporter.models.Time;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

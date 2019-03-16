@@ -6,10 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import com.marius.reporter.Report;
 import com.marius.reporter.database.report.ReportBaseHelper;
 import com.marius.reporter.database.report.ReportCursorWrapper;
 import com.marius.reporter.database.report.ReportDbSchema.ReportTable;
+import com.marius.reporter.models.Report;
 
 import java.util.ArrayList;
 import java.util.Arrays;

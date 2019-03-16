@@ -20,9 +20,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
-import com.marius.reporter.Report;
 import com.marius.reporter.Settings;
 import com.marius.reporter.database.ReportRepo;
+import com.marius.reporter.models.Report;
 
 import java.util.List;
 import java.util.Objects;
@@ -117,8 +117,8 @@ public class ReportListFragment extends Fragment {
                 Report report = new Report();
                 report.setGPSName(mSettings.gpsName);
                 mCallbacks.onReportSelected(report);
-                ReportRepo.getInstance(getActivity()).addReport(report);
-                mAdapter.setReports(ReportRepo.getInstance(getActivity()).getReports());
+                ReportRepo.getInstance(getActivity()).insert(report);
+                mAdapter.setReports(ReportRepo.getInstance(getActivity()).queryAll());
                 mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
                 return true;
             default:
@@ -127,7 +127,7 @@ public class ReportListFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Report> reports = ReportRepo.getInstance(getActivity()).getReports();
+        List<Report> reports = ReportRepo.getInstance(getActivity()).queryAll();
 
         mAdapter.setReports(reports);
         mAdapter.notifyDataSetChanged();
@@ -209,7 +209,7 @@ public class ReportListFragment extends Fragment {
 
         private void deleteReport(int position) {
             mRecentlyDeletedReport = mReports.remove(position);
-            ReportRepo.getInstance(getActivity()).deleteReport(mRecentlyDeletedReport.getId());
+            ReportRepo.getInstance(getActivity()).delete(mRecentlyDeletedReport);
 
             notifyItemRemoved(position);
             showUndoSnackbar();
@@ -223,7 +223,7 @@ public class ReportListFragment extends Fragment {
         }
 
         private void undoDelete() {
-            ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReport);
+            ReportRepo.getInstance(getActivity()).insert(mRecentlyDeletedReport);
             mReports.add(mRecentlyDeletedReport);
             notifyItemInserted(mReports.indexOf(mRecentlyDeletedReport));
         }

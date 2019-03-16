@@ -24,9 +24,13 @@ import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.marius.reporter.*;
+import com.marius.reporter.R;
+import com.marius.reporter.Settings;
+import com.marius.reporter.TimeEditor;
 import com.marius.reporter.database.FlyerNameRepo;
 import com.marius.reporter.database.ReportRepo;
+import com.marius.reporter.models.Report;
+import com.marius.reporter.models.Time;
 import com.marius.reporter.utils.TextInputAutoCompleteTextView;
 import com.marius.reporter.utils.anim.ViewTranslator;
 
@@ -114,7 +118,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         };
 
         UUID reportId = (UUID) getArguments().getSerializable(Arg.REPORT_ID);
-        mReport = ReportRepo.getInstance(getActivity()).getReport(reportId);
+        mReport = ReportRepo.getInstance(getActivity()).query(reportId);
         mReport.setCallBacks(this);
     }
 
@@ -206,7 +210,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
         });
         mSendReportButton.setOnClickListener(v12 -> {
-            FlyerNameRepo.getInstance(getActivity()).addFlyerName(mReport.getFlyerName());
+            FlyerNameRepo.getInstance(getActivity()).insert(mReport.getFlyerName());
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
@@ -315,7 +319,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
         mTimeListAdapter.setReport(mReport);
         mTimeListAdapter.notifyDataSetChanged();
         mFlyerNameArrayAdapter.clear();
-        mFlyerNameArrayAdapter.addAll(FlyerNameRepo.getInstance(getActivity()).getFlyerNames());
+        mFlyerNameArrayAdapter.addAll(FlyerNameRepo.getInstance(getActivity()).queryAll());
         mFlyerNameArrayAdapter.notifyDataSetChanged();
     }
 
@@ -351,7 +355,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
 
     @Override
     public void reportChanged() {
-        ReportRepo.getInstance(getActivity()).updateReport(mReport);
+        ReportRepo.getInstance(getActivity()).update(mReport);
         mCallbacks.onReportUpdated(mReport);
         if (mSendFABTimer != null) mSendFABTimer.onReportChanged();
     }

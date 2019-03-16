@@ -8,9 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import com.marius.reporter.R;
-import com.marius.reporter.Report;
 import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.fragments.ReportFragment;
+import com.marius.reporter.models.Report;
 
 import java.util.List;
 import java.util.UUID;

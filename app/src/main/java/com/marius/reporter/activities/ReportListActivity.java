@@ -3,9 +3,9 @@ package com.marius.reporter.activities;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import com.marius.reporter.R;
-import com.marius.reporter.Report;
 import com.marius.reporter.fragments.ReportFragment;
 import com.marius.reporter.fragments.ReportListFragment;
+import com.marius.reporter.models.Report;
 
 import java.util.UUID;
 

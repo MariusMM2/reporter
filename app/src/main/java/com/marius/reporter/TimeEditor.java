@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.marius.reporter.fragments.ReportFragment;
+import com.marius.reporter.models.Time;
 import com.marius.reporter.utils.anim.ViewElevator;
 import com.marius.reporter.utils.anim.ViewTranslator;
 import com.marius.reporter.utils.anim.ViewTranslator.Direction;

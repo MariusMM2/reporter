@@ -2,7 +2,7 @@ package com.marius.reporter.database.report;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import com.marius.reporter.Report;
+import com.marius.reporter.models.Report;
 
 import java.util.UUID;
 
