@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import com.marius.reporter.Report;
 import com.marius.reporter.database.report.ReportBaseHelper;
 import com.marius.reporter.database.report.ReportCursorWrapper;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ReportRepo {
+    private static final String TAG = ReportRepo.class.getSimpleName();
     private static ReportRepo instance;
     public static ReportRepo getInstance(Context context) {
         if (instance == null) {
@@ -89,9 +91,15 @@ public class ReportRepo {
         mTimeRepo.deleteTimes(getReport(id));
 
         String uuidString = id.toString();
-        mDatabase.delete(ReportTable.NAME,
+        int result = mDatabase.delete(ReportTable.NAME,
                 ReportTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
+        if (result == 1)
+            Log.i(TAG, String.format("Deleted Report with id %s", uuidString));
+        else if (result == 0)
+            Log.w(TAG, String.format("No Reports found with id %s", uuidString));
+        else
+            Log.w(TAG, String.format("Deleted more than one report (%d) for id %s", result, uuidString));
     }
 
     private static ContentValues getContentValues(Report report) {

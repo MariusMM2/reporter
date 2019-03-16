@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import com.marius.reporter.Report;
 import com.marius.reporter.Time;
 import com.marius.reporter.database.report.time.TimeBaseHelper;
@@ -13,6 +14,7 @@ import com.marius.reporter.database.report.time.TimeDbSchema;
 import com.marius.reporter.database.report.time.TimeDbSchema.TimeTable;
 
 class TimeRepo {
+    private static final String TAG = TimeRepo.class.getSimpleName();
     private static TimeRepo instance;
 
     static TimeRepo getInstance(Context context) {
@@ -56,9 +58,13 @@ class TimeRepo {
 
     void deleteTimes(Report report) {
         String uuidString = report.getId().toString();
-        mDatabase.delete(TimeTable.NAME,
+        int result = mDatabase.delete(TimeTable.NAME,
                 TimeTable.Cols.REPORT_UUID + " = ?",
                 new String[]{uuidString});
+        if (result != 0)
+            Log.i(TAG, String.format("Deleted %d Times for report id %s", result, uuidString));
+        else
+            Log.e(TAG, String.format("No Time records found for report id %s", uuidString));
     }
 
     private static ContentValues getContentValues(Time time, Report report) {
