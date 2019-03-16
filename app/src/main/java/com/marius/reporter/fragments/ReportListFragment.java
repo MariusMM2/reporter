@@ -11,10 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import com.marius.reporter.R;
@@ -164,6 +166,10 @@ public class ReportListFragment extends Fragment {
             mTimeTextView.setText(mReport.getTotalTime());
         }
 
+        public Report getReport() {
+            return mReport;
+        }
+
         @Override
         public void onClick(View v) {
             mCallbacks.onReportSelected(mReport);
@@ -263,6 +269,11 @@ public class ReportListFragment extends Fragment {
             icon.draw(c);
         }
 
+        @Override
+        public float getSwipeEscapeVelocity(float defaultValue) {
+            return defaultValue * 1.5f;
+        }
+
         SwipeToDeleteCallback(ReportAdapter adapter) {
             super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
             mAdapter = adapter;
@@ -282,7 +293,37 @@ public class ReportListFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             int position = viewHolder.getAdapterPosition();
 
-            mAdapter.deleteReport(position);
+            View dialogReportItemView = View.inflate(getContext(), R.layout.list_item_report, null);
+
+            TextView titleTextView = dialogReportItemView.findViewById(R.id.report_title);
+            TextView addressTextView = dialogReportItemView.findViewById(R.id.report_address);
+            TextView timeTextView = dialogReportItemView.findViewById(R.id.time_text);
+
+            CardView timeCard = dialogReportItemView.findViewById(R.id.time_card);
+            timeCard.setClickable(false);
+            timeCard.setForeground(null);
+
+            Report report = ((ReportHolder) viewHolder).getReport();
+            titleTextView.setText(report.getName());
+            String address = report.getAddress();
+            if (address.equals("")) {
+                addressTextView.setVisibility(View.GONE);
+            } else {
+                addressTextView.setVisibility(View.VISIBLE);
+                addressTextView.setText(address);
+            }
+
+            timeTextView.setText(report.getTotalTime());
+
+            Log.d(TAG, "Report Swiped");
+
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setTitle("Delete report")
+                    .setMessage("Are you sure you want to delete this report?")
+                    .setPositiveButton(android.R.string.yes, (dialog1, which) -> mAdapter.deleteReport(position))
+                    .setNegativeButton(android.R.string.no, (dialog14, which) -> dialog14.cancel())
+                    .setOnCancelListener(dialog12 -> mAdapter.notifyItemChanged(position))
+                    .setView(dialogReportItemView).show();
         }
     }
 }
