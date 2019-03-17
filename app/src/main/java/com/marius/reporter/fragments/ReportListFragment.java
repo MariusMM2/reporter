@@ -219,8 +219,8 @@ public class ReportListFragment extends Fragment {
         public void addReport(Report report) {
             ReportRepo.getInstance(getActivity()).addReport(report);
             mReports.add(report);
-            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
 
+            notifyItemInserted(mAdapter.getItemCount() - 1);
         }
 
         private void deleteReport(int position) {
@@ -234,14 +234,8 @@ public class ReportListFragment extends Fragment {
         private void showUndoSnackbar() {
             View view = Objects.requireNonNull(getActivity()).findViewById(R.id.report_recycler_view);
             Snackbar snackbar = Snackbar.make(view, "Report Deleted", Snackbar.LENGTH_LONG);
-            snackbar.setAction("UNDO", v -> undoDelete());
+            snackbar.setAction("UNDO", v -> addReport(mRecentlyDeletedReport));
             snackbar.show();
-        }
-
-        private void undoDelete() {
-            ReportRepo.getInstance(getActivity()).addReport(mRecentlyDeletedReport);
-            mReports.add(mRecentlyDeletedReport);
-            notifyItemInserted(mReports.indexOf(mRecentlyDeletedReport));
         }
     }
 
