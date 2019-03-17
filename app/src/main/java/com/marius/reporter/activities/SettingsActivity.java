@@ -2,40 +2,26 @@ package com.marius.reporter.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.mahfa.dnswitch.DayNightSwitch;
 import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
 import com.marius.reporter.Settings;
+import com.marius.reporter.fragments.SettingsFragment;
 
-//An Activity with a day/night switch in the menu
-public abstract class ThemedSwitchActivity extends AppCompatActivity {
-    @SuppressWarnings("unused")
-    private static final String TAG = ThemedSwitchActivity.class.getSimpleName();
+public class SettingsActivity extends ThemedActivity {
 
-    private boolean nightMode;
+    public static final String KEY_PREF_EXAMPLE_SWITCH = "example_switch";
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nightMode = Settings.getInstance(this).nightMode;
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Settings.getInstance(this).save(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (nightMode != Settings.getInstance(this).nightMode) {
-            recreate();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment())
+                .commit();
     }
 
     @Override
@@ -53,7 +39,7 @@ public abstract class ThemedSwitchActivity extends AppCompatActivity {
 
             @Override
             public void onAnimEnd() {
-                Intent intent = new Intent(ThemedSwitchActivity.this, ThemedSwitchActivity.this.getClass());
+                Intent intent = new Intent(SettingsActivity.this, SettingsActivity.this.getClass());
                 intent.putExtras(getIntent());
 
                 startActivity(intent);
@@ -73,5 +59,16 @@ public abstract class ThemedSwitchActivity extends AppCompatActivity {
         });
 
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import com.marius.reporter.R;
 
 //A template Activity consisting of one fragment
-public abstract class SingleFragmentActivity extends ThemedSwitchActivity {
+public abstract class SingleFragmentActivity extends ThemedActivity {
     protected abstract Fragment createFragment();
 
     //To be overridden if the activity contains multiple fragments

@@ -8,6 +8,7 @@
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="textInputStyle">@style/Widget.Design.TextInputLayout</item>
         <item name="snackbarStyle">@style/SnackBar</item>
+        <!--<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>-->
     </style>
 
     <style name="AppTheme.Preview" parent="Theme.AppCompat.DayNight.NoActionBar">
