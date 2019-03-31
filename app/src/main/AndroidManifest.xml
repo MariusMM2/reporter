@@ -26,7 +26,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.ReportListActivity" />
-
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
@@ -35,7 +34,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.ReportListActivity" />
-
         </activity>
     </application>
 
