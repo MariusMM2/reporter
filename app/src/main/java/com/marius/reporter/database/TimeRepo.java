@@ -16,7 +16,8 @@ import com.marius.reporter.models.Time;
 import java.util.Arrays;
 
 class TimeRepo {
-    private static final String TAG = TimeRepo.class.getSimpleName();
+    @SuppressWarnings("unused")
+    private static final String TAG = "TimeRepo";
 
     private static TimeRepo instance;
     static TimeRepo getInstance(Context context) {

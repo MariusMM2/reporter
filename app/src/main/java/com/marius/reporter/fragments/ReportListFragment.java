@@ -37,7 +37,7 @@ import java.util.Objects;
  */
 public class ReportListFragment extends Fragment {
     @SuppressWarnings("unused")
-    private static final String TAG = ReportListFragment.class.getSimpleName();
+    private static final String TAG = "ReportListFragment";
 
     private Settings mSettings;
 

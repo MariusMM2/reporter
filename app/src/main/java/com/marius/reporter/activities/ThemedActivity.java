@@ -8,7 +8,7 @@ import com.marius.reporter.Settings;
 //An Activity with a day/night switch in the menu
 public abstract class ThemedActivity extends AppCompatActivity {
     @SuppressWarnings("unused")
-    private static final String TAG = ThemedActivity.class.getSimpleName();
+    private static final String TAG = "ThemedActivity";
 
     private boolean nightMode;
 

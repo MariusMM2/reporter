@@ -16,7 +16,8 @@ import java.util.UUID;
 
 public class ReportListActivity extends SingleFragmentActivity implements ReportListFragment.Callbacks, ReportFragment.Callbacks {
     @SuppressWarnings("unused")
-    private static final String TAG = ReportListActivity.class.getSimpleName();
+    private static final String TAG = "ReportListActivity";
+
     private static UUID mQueuedReportId;
 
     @Override

@@ -8,6 +8,9 @@ import com.marius.reporter.R;
 
 //A template Activity consisting of one fragment
 public abstract class SingleFragmentActivity extends ThemedActivity {
+    @SuppressWarnings("unused")
+    private static final String TAG = "SingleFragmentActivity";
+
     protected abstract Fragment createFragment();
 
     //To be overridden if the activity contains multiple fragments

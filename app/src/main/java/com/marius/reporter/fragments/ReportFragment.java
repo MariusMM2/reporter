@@ -42,7 +42,7 @@ import java.util.UUID;
 @SuppressWarnings("ConstantConditions")
 public class ReportFragment extends Fragment implements Report.Callbacks {
     @SuppressWarnings("unused")
-    private static final String TAG = ReportFragment.class.getSimpleName();
+    private static final String TAG = "ReportFragment";
 
     @SuppressWarnings("unused")
     private class Arg {

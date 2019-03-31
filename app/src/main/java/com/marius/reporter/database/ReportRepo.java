@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class ReportRepo {
-    private static final String TAG = ReportRepo.class.getSimpleName();
+    @SuppressWarnings("unused")
+    private static final String TAG = "ReportRepo";
+
     private static ReportRepo instance;
     public static ReportRepo getInstance(Context context) {
         if (instance == null) {

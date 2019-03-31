@@ -8,7 +8,9 @@ import android.util.Log;
 import java.util.Map;
 
 public class Settings {
-    private static final String TAG = Settings.class.getSimpleName();
+    @SuppressWarnings("unused")
+    private static final String TAG = "Settings";
+
     private static Settings instance;
 
     public synchronized static Settings getInstance(Context context) {

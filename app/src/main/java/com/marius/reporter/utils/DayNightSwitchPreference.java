@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.marius.reporter.R;
 
 public class DayNightSwitchPreference extends SwitchPreferenceCompat {
+    @SuppressWarnings("unused")
+    private static final String TAG = "DayNightSwitchPreference";
+
     public DayNightSwitchPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

@@ -17,6 +17,9 @@ import java.util.UUID;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ReportPagerActivity extends ThemedActivity implements ReportFragment.Callbacks {
+    @SuppressWarnings("unused")
+    private static final String TAG = "ReportPagerActivity";
+
     private static final String EXTRA_REPORT_ID = "com.marius.reporter.activities.report_id";
 
     private ViewPager mViewPager;

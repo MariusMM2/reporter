@@ -14,6 +14,9 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class FlyerNameRepo {
+    @SuppressWarnings("unused")
+    private static final String TAG = "FlyerNameRepo";
+
     private static FlyerNameRepo instance;
 
     public static FlyerNameRepo getInstance(Context context) {
