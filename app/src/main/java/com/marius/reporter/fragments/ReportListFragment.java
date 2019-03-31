@@ -297,17 +297,13 @@ public class ReportListFragment extends Fragment {
 
             View dialogReportItemView = View.inflate(getContext(), R.layout.list_item_report, null);
 
-            TextView titleTextView = dialogReportItemView.findViewById(R.id.report_title);
-            TextView addressTextView = dialogReportItemView.findViewById(R.id.report_address);
-            TextView timeTextView = dialogReportItemView.findViewById(R.id.time_text);
-
             CardView timeCard = dialogReportItemView.findViewById(R.id.time_card);
             timeCard.setClickable(false);
             timeCard.setForeground(null);
 
             Report report = ((ReportHolder) viewHolder).getReport();
 
-            ModelBinding.bindReport(report, titleTextView, addressTextView, timeTextView);
+            ModelBinding.bindReport(report, dialogReportItemView);
 
             Log.d(TAG, "Report Swiped");
 
