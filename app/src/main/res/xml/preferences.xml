@@ -3,14 +3,16 @@
 
     <com.marius.reporter.utils.DayNightSwitchPreference
         android:defaultValue="false"
-        android:key="night_mode"
-        android:title="@string/night_mode_pref_title"
-        android:summary="@string/night_mode_pref_summary"
-        android:layout="@layout/theme_switch_pref_layout" />
+        android:title="@string/pref_title_night_mode"
+        android:summary="@string/pref_summary_night_mode"
+        android:key="@string/pref_key_night_mode"
+        android:icon="@drawable/ic_brightness" />
 
-    <android.support.v7.preference.SwitchPreferenceCompat
+    <EditTextPreference
         android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="Turn this option on or off"
-        android:title="Settings option" />
+        android:key="@string/pref_key_gps_name"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_gps_name"
+        android:icon="@drawable/ic_gps" />
 </PreferenceScreen>

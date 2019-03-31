@@ -3,11 +3,11 @@ package com.marius.reporter.utils;
 import android.content.Context;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.support.v7.preference.SwitchPreferenceCompat;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TextView;
+import com.mahfa.dnswitch.DayNightSwitch;
+import com.mahfa.dnswitch.DayNightSwitchAnimListener;
 import com.marius.reporter.R;
+import com.marius.reporter.Settings;
 
 public class DayNightSwitchPreference extends SwitchPreferenceCompat {
     @SuppressWarnings("unused")
@@ -15,40 +15,39 @@ public class DayNightSwitchPreference extends SwitchPreferenceCompat {
 
     public DayNightSwitchPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setWidgetLayoutResource(R.layout.theme_switch);
     }
 
-    public DayNightSwitchPreference(Context context) {
-        super(context);
+    public DayNightSwitchPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
-//        holder.itemView.findViewById(R.id.)
+        super.onBindViewHolder(holder);
 
-//        holder.itemView.setOnClickListener(this.mClickListener);
-//        holder.itemView.setId(this.mViewId);
-        TextView titleView = (TextView) holder.findViewById(R.id.title);
-        if (titleView != null) {
-            CharSequence title = this.getTitle();
-            if (!TextUtils.isEmpty(title)) {
-                titleView.setText(title);
-                titleView.setVisibility(View.VISIBLE);
-            } else {
-                titleView.setVisibility(View.INVISIBLE);
+        holder.itemView.findViewById(R.id.switch_item).setClickable(false);
+
+        DayNightSwitch dayNightSwitch = (DayNightSwitch) holder.findViewById(R.id.switch_item);
+        dayNightSwitch.setIsNight(Settings.getInstance(getContext()).isNightMode());
+        dayNightSwitch.setAnimListener(new DayNightSwitchAnimListener() {
+            @Override
+            public void onAnimStart() {
+                holder.itemView.setClickable(false);
             }
-        }
 
-        TextView summaryView = (TextView) holder.findViewById(R.id.summary);
-        if (summaryView != null) {
-            CharSequence summary = this.getSummary();
-            if (!TextUtils.isEmpty(summary)) {
-                summaryView.setText(summary);
-                summaryView.setVisibility(View.VISIBLE);
-            } else {
-                summaryView.setVisibility(View.INVISIBLE);
+            @Override
+            public void onAnimEnd() {
+                persistBoolean(dayNightSwitch.isNight());
+                Settings.getInstance(getContext()).refreshTheme();
             }
-        }
 
+            @Override
+            public void onAnimValueChanged(float v) {
 
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> dayNightSwitch.toggle());
     }
 }

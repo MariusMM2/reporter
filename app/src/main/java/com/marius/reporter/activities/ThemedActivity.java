@@ -15,19 +15,18 @@ public abstract class ThemedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nightMode = Settings.getInstance(this).nightMode;
+        nightMode = Settings.getInstance(this).isNightMode();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Settings.getInstance(this).save(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (nightMode != Settings.getInstance(this).nightMode) {
+        if (nightMode != Settings.getInstance(this).isNightMode()) {
             recreate();
         }
     }

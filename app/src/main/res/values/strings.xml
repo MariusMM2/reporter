@@ -13,6 +13,17 @@
     <string name="reset_report">Reset Report</string>
     <string name="new_report">New Report</string>
     <string name="report_title">Report Title</string>
-    <string name="night_mode_pref_title">Night Mode</string>
-    <string name="night_mode_pref_summary">Turn night mode on or off</string>
+    <string name="settings_menu_item">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- General settings -->
+    <string name="pref_title_night_mode">Night Mode</string>
+    <string name="pref_summary_night_mode">(WIP)Turn night mode on or off</string>
+    <string name="pref_key_night_mode">night_mode</string>
+
+    <string name="pref_title_gps_name">GPS Name</string>
+    <string name="pref_key_gps_name">gps_name</string>
+
+
 </resources>

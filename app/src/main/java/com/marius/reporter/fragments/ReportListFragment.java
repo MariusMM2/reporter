@@ -65,7 +65,7 @@ public class ReportListFragment extends Fragment {
             mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement Callbacks");
+                    + " must implement Callback");
         }
 
     }
@@ -80,15 +80,14 @@ public class ReportListFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_report_list, container, false);
-
-        mNewReportFAB = v.findViewById(R.id.new_report);
-        mReportRecyclerView = v.findViewById(R.id.report_recycler_view);
-        return v;
+        return inflater.inflate(R.layout.fragment_report_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mNewReportFAB = view.findViewById(R.id.new_report);
+        mReportRecyclerView = view.findViewById(R.id.report_recycler_view);
+
         mNewReportFAB.setOnClickListener(v -> newReport());
 
         mReportRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -130,7 +129,7 @@ public class ReportListFragment extends Fragment {
     private void newReport() {
         if (!mCallbacks.hasReportQueued()) {
             Report report = new Report();
-            report.setGPSName(mSettings.gpsName);
+            report.setGPSName(mSettings.getGpsName());
             mCallbacks.onReportSelected(report);
             mAdapter.addReport(report);
         }

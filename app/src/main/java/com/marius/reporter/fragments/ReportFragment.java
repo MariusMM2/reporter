@@ -190,21 +190,6 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             public void afterTextChanged(Editable s) {
             }
         });
-        mGpsNameField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mReport.setGPSName(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mSettings.gpsName = s.toString();
-            }
-        });
         mAddTimeButton.setOnClickListener(v1 -> {
             mReport.add(new Time());
             mTimeListAdapter.notifyItemInserted(mTimeListAdapter.getItemCount() - 1);
@@ -286,7 +271,7 @@ public class ReportFragment extends Fragment implements Report.Callbacks {
             case R.id.reset_report:
                 mReport.reset();
                 mReport.setCallBacks(this);
-                mReport.setGPSName(mSettings.gpsName);
+                mReport.setGPSName(mSettings.getGpsName());
                 updateUI();
                 return true;
             default:
