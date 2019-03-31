@@ -24,6 +24,7 @@ import com.marius.reporter.R;
 import com.marius.reporter.Settings;
 import com.marius.reporter.database.ReportRepo;
 import com.marius.reporter.models.Report;
+import com.marius.reporter.utils.ModelBinding;
 
 import java.util.List;
 import java.util.Objects;
@@ -162,17 +163,8 @@ public class ReportListFragment extends Fragment {
 
         private void bind(Report report) {
             mReport = report;
-            mTitleTextView.setText(mReport.getName());
-            String address = mReport.getAddress();
-            if (address.equals("")) {
-                mAddressTextView.setVisibility(View.GONE);
-            } else {
-                mAddressTextView.setVisibility(View.VISIBLE);
-                mAddressTextView.setText(address);
-            }
 
-
-            mTimeTextView.setText(mReport.getTotalTime());
+            ModelBinding.bindReport(report, mTitleTextView, mAddressTextView, mTimeTextView);
         }
 
         public Report getReport() {
@@ -314,16 +306,8 @@ public class ReportListFragment extends Fragment {
             timeCard.setForeground(null);
 
             Report report = ((ReportHolder) viewHolder).getReport();
-            titleTextView.setText(report.getName());
-            String address = report.getAddress();
-            if (address.equals("")) {
-                addressTextView.setVisibility(View.GONE);
-            } else {
-                addressTextView.setVisibility(View.VISIBLE);
-                addressTextView.setText(address);
-            }
 
-            timeTextView.setText(report.getTotalTime());
+            ModelBinding.bindReport(report, titleTextView, addressTextView, timeTextView);
 
             Log.d(TAG, "Report Swiped");
 
